@@ -1,12 +1,9 @@
 import React from 'react';
-import { SimpleChart } from './components';
-
+import { GraphPage } from './components';
 function App() {
   return (
     <div className="App">
-      <div>
-        <SimpleChart />
-      </div>
+      <GraphPage />
     </div>
   );
 }
