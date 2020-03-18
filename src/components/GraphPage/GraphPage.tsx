@@ -19,7 +19,7 @@ const GraphPage: React.FC = () => {
   };
   return (
     <Paper
-      elevation={1}
+      elevation={3}
       style={{
         width: 600,
         height: 300
