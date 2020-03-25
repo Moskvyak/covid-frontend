@@ -16,7 +16,7 @@ interface Props {
 const SimpleChart: React.FC<Props> = (props: Props) => {
   return (
     <LineChart
-      width={300}
+      width={600}
       height={300}
       data={props.data}
       margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
