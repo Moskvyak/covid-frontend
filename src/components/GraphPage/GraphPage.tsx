@@ -4,74 +4,156 @@ import gql from 'graphql-tag';
 
 import { SimpleChart } from '../SimpleChart';
 import Paper from '@material-ui/core/Paper';
-import { confirmed, countries } from '../../data';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import { confirmed } from '../../data';
 
-const GET_DAYS = gql`
-  query Day($locationName: String) {
-    Day(where: { Reports: { Location: { name: { _eq: $locationName } } } }) {
+const GET_COUNTRIES = gql`
+  query MyQuery {
+    Location(
+      where: { locationTypeId: { _eq: 1 } }
+      order_by: { Reports_aggregate: { max: { confirmedTotal: desc } } }
+    ) {
+      id
+      name
+      Reports(limit: 1, order_by: { confirmedTotal: desc_nulls_last }) {
+        confirmedTotal
+      }
+    }
+  }
+`;
+
+const GET_CONTRIES_REPORTS = gql`
+  query MyQuery($locationName: [String!]) {
+    Day {
       date
       id
-      Reports {
-        confirmedNew
+      Reports(
+        where: {
+          Location: { name: { _in: $locationName }, locationTypeId: { _eq: 1 } }
+        }
+      ) {
         confirmedTotal
-        deathsNew
-        deathsTotal
-        recoveredNew
-        recoveredTotal
+        Location {
+          name
+        }
       }
     }
   }
 `;
 const GraphPage: React.FC = () => {
-  const [selectedCountries, setSelectedCountries] = useState([countries[0]]);
+  let countries: any[] = [];
+  const [selectedCountries, setSelectedCountries] = useState(countries);
   const [daysData, setDaysData] = useState([]);
-  const { loading, error, data, refetch } = useQuery(GET_DAYS, {
+  const { loading: getCountriessLoading, data: getCountriesData } = useQuery(
+    GET_COUNTRIES
+  );
+
+  const {
+    loading: getCountriesReportsLoading,
+    data: getCountriesReportsData,
+    refetch: refetchCountriesReports
+  } = useQuery(GET_CONTRIES_REPORTS, {
     variables: {
-      locationName: "Italy"
+      locationName: ['Italy']
     }
   });
-  if (loading) return <p>Loading ...</p>;
+
+  if (getCountriessLoading) return <p>Loading ...</p>;
 
   const updateCountry = (country: any) => {
-    console.log({ country });
-    if (!selectedCountries.find((selC: any) => selC.c === country.c)) {
+    if (!selectedCountries.find((selC: any) => selC.id === country.id)) {
       const updatedCountries = [...selectedCountries, country];
       setSelectedCountries(updatedCountries);
+      refetchCountriesReports({
+        locationName: updatedCountries.map((country: any) => country.name)
+      });
     } else {
       const updatedCountries = selectedCountries.filter(
-        (selC: any) => selC.c !== country.c
+        (selC: any) => selC.id !== country.id
       );
       setSelectedCountries(updatedCountries);
+      refetchCountriesReports({
+        locationName: updatedCountries.map((country: any) => country.name)
+      });
     }
   };
-  console.log({ data });
+  console.log({ getCountriesReportsLoading, getCountriesReportsData });
+
+  let mappedData = confirmed;
+  if (getCountriesReportsData && getCountriesReportsData.Day) {
+    mappedData = getCountriesReportsData.Day.map((dayItem: any) => {
+      const reports: any = {};
+      dayItem.Reports.forEach((report: any) => {
+        const key = report.Location.name;
+        const value = report.confirmedTotal;
+        reports[key] = value;
+      });
+      const newItem = {
+        id: `${new Date(dayItem.date).getDate()}/${new Date(
+          dayItem.date
+        ).getMonth()}`,
+        ...reports
+      };
+      return newItem;
+    });
+  }
+  if (getCountriesData && getCountriesData.Location) {
+    countries = getCountriesData.Location.filter((location: any) => location.Reports.length);
+  }
+  console.log({ mappedData, selectedCountries });
   return (
-    <Paper
-      elevation={3}
+    <div
       style={{
-        width: 600,
-        height: 300
+        display: 'flex'
       }}
     >
-      <SimpleChart data={confirmed} selectedCountries={selectedCountries} />
-      <div>
-        <div>
+      <Paper
+        elevation={3}
+        style={{
+          width: 600,
+          height: 300,
+          paddingLeft: 20
+        }}
+      >
+        <div
+          style={{
+            height: 300,           
+            overflowY: 'scroll'
+          }}
+        >
           {countries.map((country: any) => {
+            const isSelected = !!selectedCountries.find(
+              (selC: any) => selC.id === country.id
+            );
             return (
-              <div key={country.c}>
-                <div onClick={() => updateCountry(country)}>
-                  Select {country.c}
-                </div>
-                <br />
+              <div key={country.id}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isSelected}
+                      onChange={() => updateCountry(country)}
+                      value={country.id}
+                      color="primary"
+                    />
+                  }
+                  label={`${country.name} - ${country.Reports[0].confirmedTotal}`}
+                />
               </div>
             );
           })}
         </div>
-      </div>
-      <button onClick={() => refetch({
-        locationName: "Australia"
-      })}>Get Data</button>
-    </Paper>
+      </Paper>
+      <Paper
+        elevation={3}
+        style={{
+          width: 600,
+          height: 300
+        }}
+      >
+        <SimpleChart data={mappedData} selectedCountries={selectedCountries} />
+      </Paper>
+    </div>
   );
 };
 

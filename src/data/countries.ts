@@ -1,4 +1,4 @@
 export const countries: any[] = [
-  { c: 'italy', color: '#8884d8' },
-  { c: 'france', color: '#ff4f4f' }
+  { c: 'Italy', color: '#8884d8' },
+  { c: 'Australia', color: '#ff4f4f' }
 ];
