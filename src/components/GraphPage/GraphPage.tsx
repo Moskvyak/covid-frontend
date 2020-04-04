@@ -4,11 +4,10 @@ import gql from 'graphql-tag';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-
-import { SimpleChart } from '../SimpleChart';
-import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { CasesGraphs } from '../CasesGraphs';
+
 import { confirmed } from '../../data';
 
 const drawerWidth = 240;
@@ -17,26 +16,27 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
+      background: '#eee'
     },
     appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
+      width: '100%',
+      padding: 20
     },
     drawer: {
       width: drawerWidth,
-      flexShrink: 0,
+      flexShrink: 0
     },
     drawerPaper: {
-      width: drawerWidth,
+      width: drawerWidth
     },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
     content: {
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
-      padding: theme.spacing(3),
-    },
-  }),
+      padding: theme.spacing(3)
+    }
+  })
 );
 
 const GET_COUNTRIES = gql`
@@ -49,6 +49,8 @@ const GET_COUNTRIES = gql`
       name
       Reports(limit: 1, order_by: { confirmedTotal: desc_nulls_last }) {
         confirmedTotal
+        recoveredTotal
+        deathsTotal
       }
     }
   }
@@ -130,49 +132,50 @@ const GraphPage: React.FC = () => {
     });
   }
   if (getCountriesData && getCountriesData.Location) {
-    countries = getCountriesData.Location.filter((location: any) => location.Reports.length);
+    countries = getCountriesData.Location.filter(
+      (location: any) => location.Reports.length
+    );
   }
   console.log({ mappedData, selectedCountries });
   return (
     <div className={classes.root}>
-     <Drawer
+      <Drawer
         className={classes.drawer}
         variant="permanent"
         classes={{
-          paper: classes.drawerPaper,
+          paper: classes.drawerPaper
         }}
         anchor="left"
       >
-          {countries.map((country: any) => {
-            const isSelected = !!selectedCountries.find(
-              (selC: any) => selC.id === country.id
-            );
-            return (
-              <div key={country.id}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={isSelected}
-                      onChange={() => updateCountry(country)}
-                      value={country.id}
-                      color="primary"
-                    />
-                  }
-                  label={`${country.name} - ${country.Reports[0].confirmedTotal}`}
-                />
-              </div>
-            );
-          })}
+        {countries.map((country: any) => {
+          const isSelected = !!selectedCountries.find(
+            (selC: any) => selC.id === country.id
+          );
+          return (
+            <div key={country.id}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => updateCountry(country)}
+                    value={country.id}
+                    color="primary"
+                  />
+                }
+                label={`${country.name} - ${country.Reports[0].confirmedTotal}`}
+              />
+            </div>
+          );
+        })}
       </Drawer>
-      <Paper
-        elevation={3}
-        style={{
-          width: 600,
-          height: 300
-        }}
-      >
-        <SimpleChart data={mappedData} selectedCountries={selectedCountries} />
-      </Paper>
+      <div className={classes.appBar}>
+        {getCountriesReportsData &&
+          getCountriesReportsData.Day &&
+          <CasesGraphs
+            selectedCountries={selectedCountries}
+            countriesData={getCountriesReportsData}
+          />}
+      </div>
     </div>
   );
 };
