@@ -2,11 +2,42 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+
 import { SimpleChart } from '../SimpleChart';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { confirmed } from '../../data';
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+    },
+    appBar: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    content: {
+      flexGrow: 1,
+      backgroundColor: theme.palette.background.default,
+      padding: theme.spacing(3),
+    },
+  }),
+);
 
 const GET_COUNTRIES = gql`
   query MyQuery {
@@ -44,7 +75,7 @@ const GET_CONTRIES_REPORTS = gql`
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
-  const [daysData, setDaysData] = useState([]);
+  const classes = useStyles();
   const { loading: getCountriessLoading, data: getCountriesData } = useQuery(
     GET_COUNTRIES
   );
@@ -103,25 +134,15 @@ const GraphPage: React.FC = () => {
   }
   console.log({ mappedData, selectedCountries });
   return (
-    <div
-      style={{
-        display: 'flex'
-      }}
-    >
-      <Paper
-        elevation={3}
-        style={{
-          width: 600,
-          height: 300,
-          paddingLeft: 20
+    <div className={classes.root}>
+     <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
         }}
+        anchor="left"
       >
-        <div
-          style={{
-            height: 300,           
-            overflowY: 'scroll'
-          }}
-        >
           {countries.map((country: any) => {
             const isSelected = !!selectedCountries.find(
               (selC: any) => selC.id === country.id
@@ -142,8 +163,7 @@ const GraphPage: React.FC = () => {
               </div>
             );
           })}
-        </div>
-      </Paper>
+      </Drawer>
       <Paper
         elevation={3}
         style={{
