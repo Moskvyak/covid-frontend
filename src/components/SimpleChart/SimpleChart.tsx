@@ -21,7 +21,7 @@ const SimpleChart: React.FC<Props> = (props: Props) => {
     <ResponsiveContainer>
       <LineChart
         data={props.data}
-      >
+        >
         {props.selectedCountries.map((selected: any, index: number) => {
           return (
             <Line key={selected.id} type="monotone" dataKey={selected.name} stroke={colors[index]} dot={false}/>
