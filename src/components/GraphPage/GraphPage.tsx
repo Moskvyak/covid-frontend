@@ -67,6 +67,8 @@ const GET_CONTRIES_REPORTS = gql`
         }
       ) {
         confirmedTotal
+        recoveredTotal
+        deathsTotal
         Location {
           name
         }

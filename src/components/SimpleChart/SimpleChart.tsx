@@ -1,11 +1,13 @@
 import React from 'react';
+import { colors } from '../../data';
 import {
   LineChart,
   Line,
   CartesianGrid,
   XAxis,
   YAxis,
-  Tooltip
+  Tooltip,
+  Legend
 } from 'recharts';
 
 import { ResponsiveContainer } from '../ResponsiveContainer/ResponsiveContainer';
@@ -16,26 +18,21 @@ interface Props {
 
 const SimpleChart: React.FC<Props> = (props: Props) => {
   return (
-    <ResponsiveContainer >
-
-    <LineChart
-      data={props.data}
-      margin={{ top: 5, right: 20, bottom: 5, left: 50 }}
+    <ResponsiveContainer>
+      <LineChart
+        data={props.data}
       >
-      {props.selectedCountries.map((selected: any) => {
-        return (
-          <Line
-          key={selected.id}
-          type="monotone"
-          dataKey={selected.name}
-          />
+        {props.selectedCountries.map((selected: any, index: number) => {
+          return (
+            <Line key={selected.id} type="monotone" dataKey={selected.name} stroke={colors[index]} dot={false}/>
           );
         })}
-      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-      <XAxis dataKey="id" />
-      <YAxis />
-      <Tooltip />
-    </LineChart>
+        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+        <XAxis dataKey="id" />
+        <YAxis />
+        <Legend verticalAlign="top" margin={{top: 40}}/>
+        <Tooltip wrapperStyle={{zIndex: 1000}} />
+      </LineChart>
     </ResponsiveContainer>
   );
 };

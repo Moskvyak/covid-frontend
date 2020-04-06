@@ -1,5 +1,5 @@
 import { confirmed } from './confirmed';
-import { countries } from './countries';
+import { colors } from './colors';
 
 export { confirmed };
-export { countries };
+export { colors };
