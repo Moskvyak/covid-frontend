@@ -50,21 +50,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     deathsData.push(newDeathsItem);
     activeData.push(newActiveItem);
   });
-  const mappedData = countriesData.Day.map((dayItem: any) => {
-    const reports: any = {};
-    dayItem.Reports.forEach((report: any) => {
-      const key = report.Location.name;
-      const value = report.confirmedTotal;
-      reports[key] = value;
-    });
-    const newItem = {
-      id: `${new Date(dayItem.date).getDate()}/${new Date(
-        dayItem.date
-      ).getMonth()}`,
-      ...reports
-    };
-    return newItem;
-  });
 
   return (
     <React.Fragment>

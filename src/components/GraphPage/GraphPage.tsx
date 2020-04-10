@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { CasesGraphs } from '../CasesGraphs';
-
-import { confirmed } from '../../data';
+import { ReportsBlock } from '../ReportsBlock/ReportsBlock';
+import { GET_COUNTRIES, GET_CONTRIES_REPORTS } from '../../graphql/queries';
 
 const drawerWidth = 240;
 
@@ -39,106 +38,36 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const GET_COUNTRIES = gql`
-  query MyQuery {
-    Location(
-      where: { locationTypeId: { _eq: 2 } }
-      order_by: { Reports_aggregate: { max: { confirmedTotal: desc } } }
-    ) {
-      id
-      name
-      Reports(limit: 1, order_by: { confirmedTotal: desc_nulls_last }) {
-        confirmedTotal
-        recoveredTotal
-        deathsTotal
-      }
-    }
-  }
-`;
 
-const GET_CONTRIES_REPORTS = gql`
-  query MyQuery($locationName: [String!]) {
-    Day {
-      date
-      id
-      Reports(
-        where: {
-          Location: { name: { _in: $locationName }, locationTypeId: { _eq: 2 } }
-        }
-      ) {
-        confirmedTotal
-        recoveredTotal
-        deathsTotal
-        Location {
-          name
-        }
-      }
-    }
-  }
-`;
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
   const classes = useStyles();
-  const { loading: getCountriessLoading, data: getCountriesData } = useQuery(
-    GET_COUNTRIES
-  );
-
-  const {
-    loading: getCountriesReportsLoading,
-    data: getCountriesReportsData,
-    refetch: refetchCountriesReports
-  } = useQuery(GET_CONTRIES_REPORTS, {
-    variables: {
-      locationName: ['Italy']
+  const { data: getCountriesData } = useQuery(
+    GET_COUNTRIES, {
+      onCompleted: (data: any) => {
+        setSelectedCountries(data.Location.slice(0,3));
+      }
     }
-  });
-
-  if (getCountriessLoading) return <p>Loading ...</p>;
+  );
 
   const updateCountry = (country: any) => {
     if (!selectedCountries.find((selC: any) => selC.id === country.id)) {
       const updatedCountries = [...selectedCountries, country];
       setSelectedCountries(updatedCountries);
-      refetchCountriesReports({
-        locationName: updatedCountries.map((country: any) => country.name)
-      });
     } else {
       const updatedCountries = selectedCountries.filter(
         (selC: any) => selC.id !== country.id
       );
       setSelectedCountries(updatedCountries);
-      refetchCountriesReports({
-        locationName: updatedCountries.map((country: any) => country.name)
-      });
     }
   };
-  console.log({ getCountriesReportsLoading, getCountriesReportsData });
 
-  let mappedData = confirmed;
-  if (getCountriesReportsData && getCountriesReportsData.Day) {
-    mappedData = getCountriesReportsData.Day.map((dayItem: any) => {
-      const reports: any = {};
-      dayItem.Reports.forEach((report: any) => {
-        const key = report.Location.name;
-        const value = report.confirmedTotal;
-        reports[key] = value;
-      });
-      const newItem = {
-        id: `${new Date(dayItem.date).getDate()}/${new Date(
-          dayItem.date
-        ).getMonth()}`,
-        ...reports
-      };
-      return newItem;
-    });
-  }
   if (getCountriesData && getCountriesData.Location) {
     countries = getCountriesData.Location.filter(
       (location: any) => location.Reports.length
     );
   }
-  console.log({ mappedData, selectedCountries });
   return (
     <div className={classes.root}>
       <Drawer
@@ -149,7 +78,7 @@ const GraphPage: React.FC = () => {
         }}
         anchor="left"
       >
-        {countries.map((country: any) => {
+        { countries.length > 0 && countries.map((country: any) => {
           const isSelected = !!selectedCountries.find(
             (selC: any) => selC.id === country.id
           );
@@ -169,15 +98,11 @@ const GraphPage: React.FC = () => {
             </div>
           );
         })}
+        {
+           !countries.length && <p> Loading locations... </p>
+        }
       </Drawer>
-      <div className={classes.appBar}>
-        {getCountriesReportsData &&
-          getCountriesReportsData.Day &&
-          <CasesGraphs
-            selectedCountries={selectedCountries}
-            countriesData={getCountriesReportsData}
-          />}
-      </div>
+     <ReportsBlock selectedCountries={selectedCountries} />
     </div>
   );
 };

@@ -30,7 +30,7 @@ const SimpleChart: React.FC<Props> = (props: Props) => {
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
         <XAxis dataKey="id" />
         <YAxis />
-        <Legend verticalAlign="top" margin={{top: 40}}/>
+        <Legend verticalAlign="top"/>
         <Tooltip wrapperStyle={{zIndex: 1000}} />
       </LineChart>
     </ResponsiveContainer>
