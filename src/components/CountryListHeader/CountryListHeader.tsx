@@ -14,8 +14,8 @@ const fontSize = 11;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      paddingTop: 10,
       display: 'flex',
+      height: 30,
       width: 360,
       alignItems: 'center'
     },
