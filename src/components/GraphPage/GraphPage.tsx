@@ -37,6 +37,15 @@ const useStyles = makeStyles((theme: Theme) =>
     drawerPaper: {
       width: drawerWidth
     },
+    '@keyframes appear': {
+      from: { opacity: 0 },
+      to: { opacity: 1 }
+    },
+    fadeIn: {
+      animationName: '$appear',
+      animationDuration: '1s',
+      animationTimingFunction: 'linear'
+    },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
     content: {
@@ -86,34 +95,36 @@ const GraphPage: React.FC = () => {
       >
         <CountryListHeader />
         {countries.length > 0 &&
-          countries.map((country: any) => {
-            const isSelected = !!selectedCountries.find(
-              (selC: any) => selC.id === country.id
-            );
-            return (
-              <div key={country.id}>
-                <FormControlLabel
-                className={classes.listItem}
-                  control={
-                    <Checkbox
-                      checked={isSelected}
-                      onChange={() => updateCountry(country)}
-                      value={country.id}
-                      color="primary"
-                    />
-                  }
-                  label={
-                    <CountryListItem
-                      name={country.name}
-                      confirmed={country.Reports[0].confirmedTotal}
-                      recovered={country.Reports[0].recoveredTotal}
-                      deaths={country.Reports[0].deathsTotal}
-                    />
-                  }
-                />
-              </div>
-            );
-          })}
+          <div className={classes.fadeIn}>
+            {countries.map((country: any) => {
+              const isSelected = !!selectedCountries.find(
+                (selC: any) => selC.id === country.id
+              );
+              return (
+                <div key={country.id}>
+                  <FormControlLabel
+                    className={classes.listItem}
+                    control={
+                      <Checkbox
+                        checked={isSelected}
+                        onChange={() => updateCountry(country)}
+                        value={country.id}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <CountryListItem
+                        name={country.name}
+                        confirmed={country.Reports[0].confirmedTotal}
+                        recovered={country.Reports[0].recoveredTotal}
+                        deaths={country.Reports[0].deathsTotal}
+                      />
+                    }
+                  />
+                </div>
+              );
+            })}
+          </div>}
         {!countries.length &&
           <div className={classes.loading}>
             <p>Loading locations...</p>

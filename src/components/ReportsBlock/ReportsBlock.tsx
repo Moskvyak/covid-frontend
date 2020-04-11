@@ -13,6 +13,15 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       paddingLeft: 40,
       paddingRight: 40
+    },
+    '@keyframes appear': {
+      from: { opacity: 0 },
+      to: { opacity: 1 }
+    },
+    fadeIn: {
+      animationName: '$appear',
+      animationDuration: '1s',
+      animationTimingFunction: 'linear'
     }
   })
 );
@@ -26,9 +35,7 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
   const classes = useStyles();
 
   const {
-    loading: getCountriesReportsLoading,
     data: getCountriesReportsData,
-    refetch: refetchCountriesReports
   } = useQuery(GET_CONTRIES_REPORTS, {
     variables: {
       locationName: selectedCountries.map((country: any) => country.name)
@@ -36,14 +43,16 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
   });
 
   return (
-      <div className={classes.root}>
-        {getCountriesReportsData &&
-          getCountriesReportsData.Day &&
+    <div className={classes.root}>
+      {getCountriesReportsData &&
+        getCountriesReportsData.Day &&
+        <div className={classes.fadeIn}>
           <CasesGraphs
             selectedCountries={selectedCountries}
             countriesData={getCountriesReportsData}
-          />}
-      </div>
+          />
+        </div>}
+    </div>
   );
 };
 
