@@ -61,6 +61,30 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     extendedIcon: {
       marginRight: theme.spacing(0.5)
+    },
+    openButton: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      borderBottomLeftRadius: 0,
+      borderTopLeftRadius: 0,
+      width: 30,
+      height: 30,
+      background: '#FFF',
+      border: '1px solid #eee',
+      borderTop: 0
+    },
+    closeButton: {
+      position: 'fixed',
+      top: 0,
+      left: drawerWidth,
+      borderBottomLeftRadius: 0,
+      borderTopLeftRadius: 0,
+      width: 30,
+      height: 30,
+      background: '#FFF',
+      border: '1px solid #eee',
+      borderTop: 0
     }
   })
 );
@@ -161,18 +185,7 @@ const GraphPage: React.FC = () => {
        </div>}
       {drawerOpened &&
         <IconButton
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: drawerWidth,
-            borderBottomLeftRadius: 0,
-            borderTopLeftRadius: 0,
-            width: 30,
-            height: 30,
-            background: '#FFF',
-            border: '1px solid #eee',
-            borderTop: 0
-          }}
+          className={classes.closeButton}
           size="small"
           aria-label="close"
           onClick={() => setDrawerOpened(false)}
@@ -181,18 +194,7 @@ const GraphPage: React.FC = () => {
         </IconButton>}
         {!drawerOpened &&
         <IconButton
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            borderBottomLeftRadius: 0,
-            borderTopLeftRadius: 0,
-            width: 30,
-            height: 30,
-            background: '#FFF',
-            border: '1px solid #eee',
-            borderTop: 0
-          }}
+          className={classes.openButton}
           size="small"
           aria-label="close"
           onClick={() => setDrawerOpened(true)}
