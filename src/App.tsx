@@ -31,7 +31,7 @@ function App() {
     .then(result => console.log(result));
   return (
     <ApolloProvider client={client}>
-      <div className="App">
+      <div>
         <GraphPage />
       </div>
     </ApolloProvider>

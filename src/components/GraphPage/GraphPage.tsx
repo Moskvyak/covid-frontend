@@ -11,13 +11,12 @@ import { ReportsBlock } from '../ReportsBlock';
 import { CountryListItem } from '../CountryListItem';
 import { GET_COUNTRIES } from '../../graphql/queries';
 
-const drawerWidth = 350;
+const drawerWidth = 360;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      background: '#eee'
+      display: 'flex'
     },
     appBar: {
       width: '100%',
