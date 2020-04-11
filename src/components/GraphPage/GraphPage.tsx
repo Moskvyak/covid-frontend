@@ -3,9 +3,12 @@ import { useQuery } from '@apollo/react-hooks';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import { ReportsBlock } from '../ReportsBlock';
 import { CountryListItem } from '../CountryListItem';
@@ -25,7 +28,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawer: {
       width: drawerWidth,
-      flexShrink: 0
+      flexShrink: 0,
+      marginTop: 30,
+      height: 'calc(100% - 30px)'
     },
     listItem: {
       width: '100%',
@@ -35,7 +40,12 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 20
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
+      marginTop: 30,
+      height: 'calc(100% - 30px)'
+    },
+    closed: {
+      width: 0
     },
     '@keyframes appear': {
       from: { opacity: 0 },
@@ -48,6 +58,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     isEven: {
       background: 'rgba(227,242,253, 0.3)'
+    },
+    extendedIcon: {
+      marginRight: theme.spacing(0.5)
     }
   })
 );
@@ -55,6 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
+  const [drawerOpened, setDrawerOpened] = useState(true);
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
@@ -79,17 +93,20 @@ const GraphPage: React.FC = () => {
       (location: any) => location.Reports.length
     );
   }
+  const drawerClass = drawerOpened
+    ? classes.drawer
+    : `${classes.drawer} ${classes.closed}`;
   return (
     <div className={classes.root}>
       <Drawer
-        className={classes.drawer}
-        variant="permanent"
+        className={drawerClass}
+        variant={'persistent'}
+        open={drawerOpened}
         classes={{
           paper: classes.drawerPaper
         }}
         anchor="left"
       >
-        <CountryListHeader />
         {countries.length > 0 &&
           <div className={classes.fadeIn}>
             {countries.map((country: any, index: number) => {
@@ -131,6 +148,57 @@ const GraphPage: React.FC = () => {
             <LinearProgress />
           </div>}
       </Drawer>
+      {drawerOpened && 
+      <div  style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: drawerWidth,
+        height: 30,
+        background: '#FFF'
+      }}>
+       <CountryListHeader />
+       </div>}
+      {drawerOpened &&
+        <IconButton
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: drawerWidth,
+            borderBottomLeftRadius: 0,
+            borderTopLeftRadius: 0,
+            width: 30,
+            height: 30,
+            background: '#FFF',
+            border: '1px solid #eee',
+            borderTop: 0
+          }}
+          size="small"
+          aria-label="close"
+          onClick={() => setDrawerOpened(false)}
+        >
+          <ChevronLeftIcon className={classes.extendedIcon} />
+        </IconButton>}
+        {!drawerOpened &&
+        <IconButton
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            borderBottomLeftRadius: 0,
+            borderTopLeftRadius: 0,
+            width: 30,
+            height: 30,
+            background: '#FFF',
+            border: '1px solid #eee',
+            borderTop: 0
+          }}
+          size="small"
+          aria-label="close"
+          onClick={() => setDrawerOpened(true)}
+        >
+          <ChevronRightIcon className={classes.extendedIcon} />
+        </IconButton>}
       <ReportsBlock selectedCountries={selectedCountries} />
     </div>
   );
