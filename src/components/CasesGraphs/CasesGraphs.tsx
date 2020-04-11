@@ -25,6 +25,11 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 300,
       alignItems: 'center'
     },
+    graphWrapper: {
+      height: 300,
+      paddingLeft: 20,
+      paddingRight: 20
+    },
     name: {
       flex: 1,
       fontSize,
@@ -108,12 +113,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       <Grid container spacing={5}>
         <Grid item xs={6}>
           <span className={classes.confirmed}>Confirmed</span>
-          <Paper
-            elevation={3}
-            style={{
-              height: 300
-            }}
-          >
+          <Paper className={classes.graphWrapper} elevation={3}>
             <SimpleChart
               data={confirmedData}
               selectedCountries={selectedCountries}
@@ -122,12 +122,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
         </Grid>
         <Grid item xs={6}>
           <span className={classes.active}>Active</span>
-          <Paper
-            elevation={3}
-            style={{
-              height: 300
-            }}
-          >
+          <Paper className={classes.graphWrapper} elevation={3}>
             <SimpleChart
               data={activeData}
               selectedCountries={selectedCountries}
@@ -139,12 +134,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
         <Grid item xs={6}>
           <span className={classes.recovered}>Recovered</span>
 
-          <Paper
-            elevation={3}
-            style={{
-              height: 300
-            }}
-          >
+          <Paper className={classes.graphWrapper} elevation={3}>
             <SimpleChart
               data={recoveredData}
               selectedCountries={selectedCountries}
@@ -154,12 +144,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
         <Grid item xs={6}>
           <span className={classes.deaths}>Deaths</span>
 
-          <Paper
-            elevation={3}
-            style={{
-              height: 300
-            }}
-          >
+          <Paper className={classes.graphWrapper} elevation={3}>
             <SimpleChart
               data={deathsData}
               selectedCountries={selectedCountries}

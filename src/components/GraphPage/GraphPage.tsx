@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme: Theme) =>
       animationName: '$appear',
       animationDuration: '1s',
       animationTimingFunction: 'linear'
+    },
+    isEven: {
+      background: 'rgba(227,242,253, 0.3)'
     }
   })
 );
@@ -89,14 +92,18 @@ const GraphPage: React.FC = () => {
         <CountryListHeader />
         {countries.length > 0 &&
           <div className={classes.fadeIn}>
-            {countries.map((country: any) => {
+            {countries.map((country: any, index: number) => {
               const isSelected = !!selectedCountries.find(
                 (selC: any) => selC.id === country.id
               );
+              const isEven = index % 2 === 1;
+              const rootClassName = isEven
+                ? `${classes.listItem} ${classes.isEven}`
+                : classes.listItem;
               return (
                 <div key={country.id}>
                   <FormControlLabel
-                    className={classes.listItem}
+                    className={rootClassName}
                     control={
                       <Checkbox
                         checked={isSelected}
