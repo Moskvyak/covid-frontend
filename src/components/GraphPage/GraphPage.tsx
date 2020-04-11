@@ -9,9 +9,10 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { ReportsBlock } from '../ReportsBlock';
 import { CountryListItem } from '../CountryListItem';
+import { CountryListHeader } from '../CountryListHeader';
 import { GET_COUNTRIES } from '../../graphql/queries';
 
-const drawerWidth = 360;
+const drawerWidth = 380;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,6 +84,7 @@ const GraphPage: React.FC = () => {
         }}
         anchor="left"
       >
+        <CountryListHeader />
         {countries.length > 0 &&
           countries.map((country: any) => {
             const isSelected = !!selectedCountries.find(

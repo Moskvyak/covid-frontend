@@ -105,7 +105,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
 
   return (
     <React.Fragment>
-      <Grid container spacing={3}>
+      <Grid container spacing={5}>
         <Grid item xs={6}>
           <span className={classes.confirmed}>Confirmed</span>
           <Paper
@@ -135,7 +135,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
           </Paper>
         </Grid>
       </Grid>
-      <Grid container spacing={3}>
+      <Grid container spacing={5}>
         <Grid item xs={6}>
           <span className={classes.recovered}>Recovered</span>
 

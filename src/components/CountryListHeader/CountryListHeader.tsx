@@ -9,25 +9,20 @@ import {
   ACTIVE_COLOR
 } from '../../data';
 
-interface Props {
-  name: string;
-  confirmed: number;
-  recovered: number;
-  deaths: number;
-}
-const fontSize = 12;
+const fontSize = 11;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      paddingTop: 10,
       display: 'flex',
-      width: 310,
+      width: 360,
       alignItems: 'center'
     },
     name: {
       flex: 1,
       fontSize,
-      lineHeight: '12px'
+      textAlign: 'center'
     },
     stats: {
       flex: '0 0 220px',
@@ -39,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 56,
       marginLeft: 1,
       marginRight: 1,
-      textAlign: 'right'
+      textAlign: 'center'
     },
     confirmed: {
       color: CONFIRMED_COLOR,
@@ -56,35 +51,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const CountryListItem: React.FC<Props> = ({
-  name,
-  confirmed,
-  recovered,
-  deaths
-}: Props) => {
+const CountryListHeader: React.FC = () => {
   const classes = useStyles();
-  const active = confirmed - recovered - deaths;
   return (
     <div className={classes.root}>
-      <div className={classes.name}>
-        {name}
-      </div>
+      <div className={classes.name}>Country</div>
       <div className={classes.stats}>
-        <span className={`${classes.confirmed} ${classes.item}`}>
-          {confirmed}
-        </span>
-        <span className={`${classes.active} ${classes.item}`}>
-          {active}
-        </span>
-        <span className={`${classes.recovered} ${classes.item}`}>
-          {recovered}
-        </span>
-        <span className={`${classes.deaths} ${classes.item}`}>
-          {deaths}
-        </span>
+      <span className={`${classes.confirmed} ${classes.item}`}>Confirmed</span>
+      <span className={`${classes.active} ${classes.item}`}>Active</span>
+      <span className={`${classes.recovered} ${classes.item}`}>Recovered</span>
+      <span className={`${classes.deaths} ${classes.item}`}>Deaths</span>
       </div>
     </div>
   );
 };
 
-export { CountryListItem };
+export { CountryListHeader };
