@@ -1,5 +1,3 @@
-import { confirmed } from './confirmed';
-import { colors } from './colors';
+import { colors, RECOVERED_COLOR, DEATH_COLOR, CONFIRMED_COLOR, ACTIVE_COLOR } from './colors';
 
-export { confirmed };
-export { colors };
+export { colors, RECOVERED_COLOR, DEATH_COLOR, CONFIRMED_COLOR, ACTIVE_COLOR};

@@ -34,3 +34,8 @@ export const colors: any[] = [
   purple[700],
   amber[700]
 ];
+
+export const CONFIRMED_COLOR = blueGrey[500];
+export const DEATH_COLOR = red[700];
+export const ACTIVE_COLOR = blue[500];
+export const RECOVERED_COLOR = green[500];
