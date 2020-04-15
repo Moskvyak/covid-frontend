@@ -16,6 +16,7 @@
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-link-http": "^1.5.16",
+    "better-npm-run": "^0.1.1",
     "graphql": "^14.6.0",
     "moment": "^2.24.0",
     "react": "^16.13.0",
@@ -25,10 +26,28 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "better-npm-run start",
+    "build": "better-npm-run build",
+    "deploy": "better-npm-run deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "betterScripts": {
+    "start": {
+      "command": "react-scripts start",
+      "env": {
+        "REACT_APP_GRAPHQL": "http://localhost:8080/v1/graphql"
+      }
+    },
+    "build": {
+      "command": "react-scripts build",
+      "env": {
+        "REACT_APP_GRAPHQL": "https://covid-wizard.herokuapp.com/v1/graphql"
+      }
+    },
+    "deploy": {
+      "command": "npm run build && aws s3 sync build/ s3://virus19.info --profile skillmap-dev"
+    }
   },
   "eslintConfig": {
     "extends": "react-app"

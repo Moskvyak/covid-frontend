@@ -16,7 +16,13 @@ interface Props {
   countriesData: any;
 }
 
-const fontSize = 12;
+const fontSize = 16;
+const leftCornerProps: any = {
+  width: '100%',
+  position: 'relative',
+  marginBottom: 20,
+  fontWeight: 600
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,9 +32,26 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center'
     },
     graphWrapper: {
-      height: 300,
-      paddingLeft: 20,
-      paddingRight: 20
+      position: 'relative',
+
+      [theme.breakpoints.down('xl')]: {
+        height: 340,
+        margin: 'auto'
+      },
+      [theme.breakpoints.down('lg')]: {
+        height: 220,
+        margin: 'auto'
+      },
+      [theme.breakpoints.down('md')]: {
+        maxWidth: 600,
+        height: 220
+      },
+      [theme.breakpoints.down('sm')]: {
+        height: 220
+      },
+      padding: 20,
+      paddingRight: 40,
+      paddingBottom: 40
     },
     name: {
       flex: 1,
@@ -41,24 +64,24 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 8
     },
     confirmed: {
-      color: CONFIRMED_COLOR,
       fontSize,
-      width: 48
+      color: CONFIRMED_COLOR,
+      ...leftCornerProps
     },
     active: {
       color: ACTIVE_COLOR,
       fontSize,
-      width: 48
+      ...leftCornerProps
     },
     recovered: {
       color: RECOVERED_COLOR,
       fontSize,
-      width: 48
+      ...leftCornerProps
     },
     deaths: {
       color: DEATH_COLOR,
       fontSize,
-      width: 48
+      ...leftCornerProps
     }
   })
 );
@@ -111,44 +134,46 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   return (
     <React.Fragment>
       <Grid container spacing={5}>
-        <Grid item xs={6}>
-          <span className={classes.confirmed}>Confirmed</span>
+        <Grid item xs={12} sm={12} md={12} lg={6}>
           <Paper className={classes.graphWrapper} elevation={3}>
-            <SimpleChart
-              data={confirmedData}
-              selectedCountries={selectedCountries}
-            />
+            <div className={classes.confirmed}>Confirmed</div>
+            {selectedCountries.length > 0 &&
+              <SimpleChart
+                data={confirmedData}
+                selectedCountries={selectedCountries}
+              />}
           </Paper>
         </Grid>
-        <Grid item xs={6}>
-          <span className={classes.active}>Active</span>
+        <Grid item xs={12} sm={12} md={12} lg={6}>
           <Paper className={classes.graphWrapper} elevation={3}>
-            <SimpleChart
-              data={activeData}
-              selectedCountries={selectedCountries}
-            />
+            <div className={classes.active}>Active</div>
+            {selectedCountries.length > 0 &&
+              <SimpleChart
+                data={activeData}
+                selectedCountries={selectedCountries}
+              />}
           </Paper>
         </Grid>
       </Grid>
       <Grid container spacing={5}>
-        <Grid item xs={6}>
-          <span className={classes.recovered}>Recovered</span>
-
+        <Grid item xs={12} sm={12} md={12} lg={6}>
           <Paper className={classes.graphWrapper} elevation={3}>
-            <SimpleChart
-              data={recoveredData}
-              selectedCountries={selectedCountries}
-            />
+            <div className={classes.recovered}>Recovered</div>
+            {selectedCountries.length > 0 &&
+              <SimpleChart
+                data={recoveredData}
+                selectedCountries={selectedCountries}
+              />}
           </Paper>
         </Grid>
-        <Grid item xs={6}>
-          <span className={classes.deaths}>Deaths</span>
-
+        <Grid item xs={12} sm={12} md={12} lg={6}>
           <Paper className={classes.graphWrapper} elevation={3}>
-            <SimpleChart
-              data={deathsData}
-              selectedCountries={selectedCountries}
-            />
+            <div className={classes.deaths}>Deaths</div>
+            {selectedCountries.length > 0 &&
+              <SimpleChart
+                data={deathsData}
+                selectedCountries={selectedCountries}
+              />}
           </Paper>
         </Grid>
       </Grid>
