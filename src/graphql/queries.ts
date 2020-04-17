@@ -7,7 +7,7 @@ export const GET_CONTRIES_REPORTS = gql`
       id
       Reports(
         where: {
-          Location: { name: { _in: $locationName }, locationTypeId: { _eq: 1 } }
+          Location: { name: { _in: $locationName }, locationTypeId: { _eq: 2 } }
         }
       ) {
         confirmedTotal
@@ -25,7 +25,7 @@ export const GET_CONTRIES_REPORTS = gql`
 export const GET_COUNTRIES = gql`
   query MyQuery {
     Location(
-      where: { locationTypeId: { _eq: 1 } }
+      where: { locationTypeId: { _eq: 2 } }
       order_by: { Reports_aggregate: { max: { confirmedTotal: desc } } }
     ) {
       id
