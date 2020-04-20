@@ -36,7 +36,7 @@
     "start": {
       "command": "react-scripts start",
       "env": {
-        "REACT_APP_GRAPHQL": "http://localhost:8080/v1/graphql"
+        "REACT_APP_GRAPHQL": "https://covid-wizard.herokuapp.com/v1/graphql"
       }
     },
     "build": {

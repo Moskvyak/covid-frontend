@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      height: '100%',
       paddingLeft: 40,
       paddingRight: 40
     },
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       to: { opacity: 1 }
     },
     fadeIn: {
+      height: '100%',
       animationName: '$appear',
       animationDuration: '1s',
       animationTimingFunction: 'linear'

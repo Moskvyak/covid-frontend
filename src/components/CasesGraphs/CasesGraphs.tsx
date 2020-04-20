@@ -27,19 +27,37 @@ const leftCornerProps: any = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      width: 300,
-      alignItems: 'center'
+     height: '100%',
+     overflowY: 'scroll',
+     '&::-webkit-scrollbar':{
+      width: '2px'
     },
+    '&::-webkit-scrollbar-track': {
+      background: '#f1f1f1'
+    },
+     
+    /* Handle */
+    '&::-webkit-scrollbar-thumb': {
+      background: '#888'
+    },
+    
+    /* Handle on hover */
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: '#555'
+    }
+    },
+    
     graphWrapper: {
       position: 'relative',
 
       [theme.breakpoints.down('xl')]: {
         height: 340,
+        maxWidth: 600,
         margin: 'auto'
       },
       [theme.breakpoints.down('lg')]: {
-        height: 220,
+        height: 260,
+        maxWidth: 600,
         margin: 'auto'
       },
       [theme.breakpoints.down('md')]: {
@@ -51,7 +69,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       padding: 20,
       paddingRight: 40,
-      paddingBottom: 40
+      paddingBottom: 40,
+      margin:'auto'
     },
     name: {
       flex: 1,
@@ -133,50 +152,49 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
 
   return (
     <React.Fragment>
-      <Grid container spacing={5}>
-        <Grid item xs={12} sm={12} md={12} lg={6}>
-          <Paper className={classes.graphWrapper} elevation={3}>
-            <div className={classes.confirmed}>Confirmed</div>
-            {selectedCountries.length > 0 &&
-              <SimpleChart
-                data={confirmedData}
-                selectedCountries={selectedCountries}
-              />}
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={6}>
-          <Paper className={classes.graphWrapper} elevation={3}>
-            <div className={classes.active}>Active</div>
-            {selectedCountries.length > 0 &&
-              <SimpleChart
-                data={activeData}
-                selectedCountries={selectedCountries}
-              />}
-          </Paper>
-        </Grid>
-      </Grid>
-      <Grid container spacing={5}>
-        <Grid item xs={12} sm={12} md={12} lg={6}>
-          <Paper className={classes.graphWrapper} elevation={3}>
-            <div className={classes.recovered}>Recovered</div>
-            {selectedCountries.length > 0 &&
-              <SimpleChart
-                data={recoveredData}
-                selectedCountries={selectedCountries}
-              />}
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={6}>
-          <Paper className={classes.graphWrapper} elevation={3}>
-            <div className={classes.deaths}>Deaths</div>
-            {selectedCountries.length > 0 &&
-              <SimpleChart
-                data={deathsData}
-                selectedCountries={selectedCountries}
-              />}
-          </Paper>
-        </Grid>
-      </Grid>
+      <Paper elevation={3} className={classes.root}>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <div className={classes.graphWrapper}>
+              <div className={classes.confirmed}>Confirmed</div>
+              {selectedCountries.length > 0 &&
+                <SimpleChart
+                  data={confirmedData}
+                  selectedCountries={selectedCountries}
+                />}
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <div className={classes.graphWrapper}>
+              <div className={classes.active}>Active</div>
+              {selectedCountries.length > 0 &&
+                <SimpleChart
+                  data={activeData}
+                  selectedCountries={selectedCountries}
+                />}
+            </div>
+          </Grid>
+       
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <div className={classes.graphWrapper}>
+              <div className={classes.recovered}>Recovered</div>
+              {selectedCountries.length > 0 &&
+                <SimpleChart
+                  data={recoveredData}
+                  selectedCountries={selectedCountries}
+                />}
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <div className={classes.graphWrapper}>
+              <div className={classes.deaths}>Deaths</div>
+              {selectedCountries.length > 0 &&
+                <SimpleChart
+                  data={deathsData}
+                  selectedCountries={selectedCountries}
+                />}
+            </div>
+          </Grid>
+      </Paper>
     </React.Fragment>
   );
 };
