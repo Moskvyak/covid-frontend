@@ -5,6 +5,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { ListOfCountries} from './components/ListOfCountries';
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL
@@ -16,14 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       height: '100%'
-    },
-    headerPlaceholder: {
-      flex: '0 0 64px'
-    },
-    body: {
-      padding: 16,
-      flex: 1,
-      overflowY: 'hidden'
     }
   })
 );
@@ -34,10 +27,7 @@ function App() {
     <ApolloProvider client={client}>
       <div className={classes.root}>
         <CssBaseline />
-        <div className={classes.headerPlaceholder} />
-        <div className={classes.body}>
           <GraphPage />
-        </div>
       </div>
     </ApolloProvider>
   );

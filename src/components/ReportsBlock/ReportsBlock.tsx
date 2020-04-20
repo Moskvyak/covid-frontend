@@ -11,9 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      height: '100%',
-      paddingLeft: 40,
-      paddingRight: 40
+      height: '100%'
     },
     '@keyframes appear': {
       from: { opacity: 0 },
