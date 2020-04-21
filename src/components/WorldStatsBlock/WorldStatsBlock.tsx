@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const WorldStatsBlock: React.FC = () => {
+const WorldStatsBlock: React.FC = React.memo(() => {
   const [totalNumbers, setTotalNumbers] = useState({
     confirmedTotal: 0,
     recoveredTotal: 0,
@@ -93,6 +93,6 @@ const WorldStatsBlock: React.FC = () => {
       </Paper>
     </div>
   );
-};
+});
 
 export { WorldStatsBlock };

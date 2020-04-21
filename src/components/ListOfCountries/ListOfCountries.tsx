@@ -120,9 +120,9 @@ const ListOfCountries: React.FC<Props> = (props: Props) => {
                       label={
                         <CountryListItem
                           name={country.name}
-                          confirmed={country.Reports[0].confirmedTotal}
-                          recovered={country.Reports[0].recoveredTotal}
-                          deaths={country.Reports[0].deathsTotal}
+                          confirmed={country.confirmedTotal}
+                          recovered={country.recoveredTotal}
+                          deaths={country.deathsTotal}
                         />
                       }
                     />

@@ -58,7 +58,15 @@ const GraphPage: React.FC = () => {
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
-      setSelectedCountries(data.Location.slice(0, 3));
+      const selectedCountries = data.Day[0].Reports.slice(0, 3).map((report: any) => {
+        const country = {
+          name: report.Location.name,
+          id: report.Location.id,
+          ...report
+        }
+        return country;
+      });
+      setSelectedCountries(selectedCountries);
     }
   });
 
@@ -74,9 +82,16 @@ const GraphPage: React.FC = () => {
     }
   };
 
-  if (getCountriesData && getCountriesData.Location) {
-    countries = getCountriesData.Location.filter(
-      (location: any) => location.Reports.length
+  if (getCountriesData && getCountriesData.Day) {
+    countries = getCountriesData.Day[0].Reports.map(
+      (report: any) => {
+        const country = {
+          name: report.Location.name,
+          id: report.Location.id,
+          ...report
+        }
+        return country;
+      }
     );
   }
 
