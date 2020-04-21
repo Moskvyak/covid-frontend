@@ -12,7 +12,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       height: 'calc(100% - 2px)',
-      padding: 24
+    },
+    container: {
+      height: '100%',
+      padding: 24,
+      display: 'flex',
+      flexDirection: 'column'
     },
     '@keyframes appear': {
       from: { opacity: 0 },
@@ -44,16 +49,19 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
   });
 
   return (
-    <Paper className={classes.root} elevation={3}>
+    <div className={classes.root}>
+
+<Paper className={`${classes.container}`} elevation={1}>
       {getCountriesReportsData &&
         getCountriesReportsData.Day &&
         <div className={classes.fadeIn}>
           <CasesGraphs
             selectedCountries={selectedCountries}
             countriesData={getCountriesReportsData}
-          />
+            />
         </div>}
     </Paper>
+    </div>
   );
 };
 

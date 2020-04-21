@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
-import { WorldStatsBlockSection } from '../WorldStatsBlockSection'
+import { WorldStatsBlockSection } from '../WorldStatsBlockSection';
 import { GET_TOTAL_NUMBERS } from '../../graphql/queries';
 
 import {
@@ -16,9 +16,12 @@ import {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
+      height: 'calc(100% - 2px)'
+    },
+    container: {
+      height: '100%',
       padding: 24,
-      height: '100%'
+      display: 'flex'
     }
   })
 );
@@ -46,12 +49,31 @@ const WorldStatsBlock: React.FC = () => {
     totalNumbers.deathsTotal;
 
   return (
-    <Paper className={classes.root} elevation={2}>
-      <WorldStatsBlockSection title="Confirmed" value={totalNumbers.confirmedTotal} color={CONFIRMED_COLOR}/>
-      <WorldStatsBlockSection title="Active" value={active}  color={ACTIVE_COLOR}/>
-      <WorldStatsBlockSection title="Recovered" value={totalNumbers.recoveredTotal} color={RECOVERED_COLOR}/>
-      <WorldStatsBlockSection title="Deaths" value={totalNumbers.deathsTotal} noBorder color={DEATH_COLOR}/>
-    </Paper>
+    <div className={classes.root}>
+      <Paper className={`${classes.container}`} elevation={1}>
+        <WorldStatsBlockSection
+          title="Confirmed"
+          value={totalNumbers.confirmedTotal}
+          color={CONFIRMED_COLOR}
+        />
+        <WorldStatsBlockSection
+          title="Active"
+          value={active}
+          color={ACTIVE_COLOR}
+        />
+        <WorldStatsBlockSection
+          title="Recovered"
+          value={totalNumbers.recoveredTotal}
+          color={RECOVERED_COLOR}
+        />
+        <WorldStatsBlockSection
+          title="Deaths"
+          value={totalNumbers.deathsTotal}
+          noBorder
+          color={DEATH_COLOR}
+        />
+      </Paper>
+    </div>
   );
 };
 
