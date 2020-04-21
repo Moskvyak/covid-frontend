@@ -1,9 +1,7 @@
 import React from 'react';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import Grid from '@material-ui/core/Grid';
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
-import Paper from '@material-ui/core/Paper';
 
 import {
   RECOVERED_COLOR,
@@ -49,24 +47,8 @@ const useStyles = makeStyles((theme: Theme) =>
     
     graphWrapper: {
       position: 'relative',
-
-      [theme.breakpoints.down('xl')]: {
-        height: 340,
-        maxWidth: 600,
-        margin: 'auto'
-      },
-      [theme.breakpoints.down('lg')]: {
-        height: 260,
-        maxWidth: 600,
-        margin: 'auto'
-      },
-      [theme.breakpoints.down('md')]: {
-        maxWidth: 600,
-        height: 220
-      },
-      [theme.breakpoints.down('sm')]: {
-        height: 220
-      },
+      width: '100%',
+      height: '100%',
       padding: 20,
       paddingRight: 40,
       paddingBottom: 40,
@@ -152,8 +134,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
 
   return (
       <div className={classes.root}>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            <div className={classes.graphWrapper}>
+         <div className={classes.graphWrapper}>
               <div className={classes.confirmed}>Confirmed</div>
               {selectedCountries.length > 0 &&
                 <SimpleChart
@@ -161,8 +142,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
                   selectedCountries={selectedCountries}
                 />}
             </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
             <div className={classes.graphWrapper}>
               <div className={classes.active}>Active</div>
               {selectedCountries.length > 0 &&
@@ -171,9 +150,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
                   selectedCountries={selectedCountries}
                 />}
             </div>
-          </Grid>
-       
-          <Grid item xs={12} sm={12} md={12} lg={12}>
             <div className={classes.graphWrapper}>
               <div className={classes.recovered}>Recovered</div>
               {selectedCountries.length > 0 &&
@@ -182,8 +158,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
                   selectedCountries={selectedCountries}
                 />}
             </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
             <div className={classes.graphWrapper}>
               <div className={classes.deaths}>Deaths</div>
               {selectedCountries.length > 0 &&
@@ -192,7 +166,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
                   selectedCountries={selectedCountries}
                 />}
             </div>
-          </Grid>
       </div>
   );
 };

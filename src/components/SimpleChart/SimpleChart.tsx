@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend
 } from 'recharts';
-
+import { applyThousandSeparator } from '../../utils/formatter';
 import { ResponsiveContainer } from '../ResponsiveContainer/ResponsiveContainer';
 interface Props {
   data: object[];
@@ -20,38 +20,17 @@ class CustomizedXAxisTick extends React.PureComponent<any, any> {
     const { x, y, payload } = this.props;
     return (
       <text
-        x={x + 20}
+        x={x + 16}
         y={y}
         dy={16}
         textAnchor="end"
         fill="#666"
-        fontSize="12px"
+        fontSize="10px"
       >
         {payload.value}
       </text>
     );
   }
-}
-
-function getThousandsGroupRegex(thousandsGroupStyle: string) {
-  switch (thousandsGroupStyle) {
-    case 'lakh':
-      return /(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/g;
-
-    case 'wan':
-      return /(\d)(?=(\d{4})+(?!\d))/g;
-
-    case 'thousand':
-    default:
-      return /(\d)(?=(\d{3})+(?!\d))/g;
-  }
-}
-
-function applyThousandSeparator(str: string, thousandSeparator: string, thousandsGroupStyle: string) {
-  const thousandsGroupRegex = getThousandsGroupRegex(thousandsGroupStyle);
-  let index = str.search(/[1-9]/);
-  index = index === -1 ? str.length : index;
-  return str.substring(0, index) + str.substring(index, str.length).replace(thousandsGroupRegex, '$1' + thousandSeparator);
 }
 
 class CustomizedYAxisTick extends React.PureComponent<any, any> {

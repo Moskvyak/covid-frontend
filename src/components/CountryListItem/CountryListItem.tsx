@@ -8,6 +8,7 @@ import {
   CONFIRMED_COLOR,
   ACTIVE_COLOR
 } from '../../data';
+import { applyThousandSeparator } from '../../utils/formatter';
 
 interface Props {
   name: string;
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'right'
     },
     confirmed: {
-      color: CONFIRMED_COLOR,
+      color: CONFIRMED_COLOR
     },
     active: {
       color: ACTIVE_COLOR
@@ -71,16 +72,16 @@ const CountryListItem: React.FC<Props> = ({
       </div>
       <div className={classes.stats}>
         <span className={`${classes.confirmed} ${classes.item}`}>
-          {confirmed}
+          {applyThousandSeparator(confirmed.toString(), ',', 'thousand')}
         </span>
         <span className={`${classes.active} ${classes.item}`}>
-          {active}
+          {applyThousandSeparator(active.toString(), ',', 'thousand')}
         </span>
         <span className={`${classes.recovered} ${classes.item}`}>
-          {recovered}
+          {applyThousandSeparator(recovered.toString(), ',', 'thousand')}
         </span>
         <span className={`${classes.deaths} ${classes.item}`}>
-          {deaths}
+          {applyThousandSeparator(deaths.toString(), ',', 'thousand')}
         </span>
       </div>
     </div>
