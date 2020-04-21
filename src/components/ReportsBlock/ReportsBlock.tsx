@@ -11,7 +11,7 @@ import { GET_CONTRIES_REPORTS } from '../../graphql/queries';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: 'calc(100% - 2px)',
+      height: 'calc(100% - 2px)'
     },
     container: {
       height: '100%',
@@ -40,9 +40,7 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
   const { selectedCountries } = props;
   const classes = useStyles();
 
-  const {
-    data: getCountriesReportsData,
-  } = useQuery(GET_CONTRIES_REPORTS, {
+  const { data: getCountriesReportsData } = useQuery(GET_CONTRIES_REPORTS, {
     variables: {
       locationName: selectedCountries.map((country: any) => country.name)
     }
@@ -50,17 +48,16 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={classes.root}>
-
-<Paper className={`${classes.container}`} elevation={1}>
-      {getCountriesReportsData &&
-        getCountriesReportsData.Day &&
-        <div className={classes.fadeIn}>
-          <CasesGraphs
-            selectedCountries={selectedCountries}
-            countriesData={getCountriesReportsData}
+      <Paper className={`${classes.container}`} elevation={1}>
+        {getCountriesReportsData &&
+          getCountriesReportsData.Day &&
+          <div className={classes.fadeIn}>
+            <CasesGraphs
+              selectedCountries={selectedCountries}
+              countriesData={getCountriesReportsData}
             />
-        </div>}
-    </Paper>
+          </div>}
+      </Paper>
     </div>
   );
 };

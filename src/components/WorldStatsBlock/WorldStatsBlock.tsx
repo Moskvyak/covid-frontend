@@ -21,7 +21,17 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       height: '100%',
       padding: 24,
-      display: 'flex'
+    },
+    '@keyframes appear': {
+      from: { opacity: 0 },
+      to: { opacity: 1 }
+    },
+    fadeIn: {
+      display: 'flex',
+      height: '100%',
+      animationName: '$appear',
+      animationDuration: '1s',
+      animationTimingFunction: 'linear'
     }
   })
 );
@@ -32,13 +42,19 @@ const WorldStatsBlock: React.FC = () => {
     recoveredTotal: 0,
     deathsTotal: 0
   });
+
   const classes = useStyles();
   useQuery(GET_TOTAL_NUMBERS, {
     onCompleted: (data: any) => {
+      const {
+        confirmedTotal,
+        recoveredTotal,
+        deathsTotal
+      } = data.Day[0].Reports_aggregate.aggregate.sum;
       setTotalNumbers({
-        confirmedTotal: 2405104,
-        recoveredTotal: 624477,
-        deathsTotal: 164956
+        confirmedTotal,
+        recoveredTotal,
+        deathsTotal
       });
     }
   });
@@ -51,27 +67,29 @@ const WorldStatsBlock: React.FC = () => {
   return (
     <div className={classes.root}>
       <Paper className={`${classes.container}`} elevation={1}>
-        <WorldStatsBlockSection
-          title="Confirmed"
-          value={totalNumbers.confirmedTotal}
-          color={CONFIRMED_COLOR}
-        />
-        <WorldStatsBlockSection
-          title="Active"
-          value={active}
-          color={ACTIVE_COLOR}
-        />
-        <WorldStatsBlockSection
-          title="Recovered"
-          value={totalNumbers.recoveredTotal}
-          color={RECOVERED_COLOR}
-        />
-        <WorldStatsBlockSection
-          title="Deaths"
-          value={totalNumbers.deathsTotal}
-          noBorder
-          color={DEATH_COLOR}
-        />
+        <div className={classes.fadeIn}>
+          <WorldStatsBlockSection
+            title="Confirmed"
+            value={totalNumbers.confirmedTotal}
+            color={CONFIRMED_COLOR}
+          />
+          <WorldStatsBlockSection
+            title="Active"
+            value={active}
+            color={ACTIVE_COLOR}
+          />
+          <WorldStatsBlockSection
+            title="Recovered"
+            value={totalNumbers.recoveredTotal}
+            color={RECOVERED_COLOR}
+          />
+          <WorldStatsBlockSection
+            title="Deaths"
+            value={totalNumbers.deathsTotal}
+            noBorder
+            color={DEATH_COLOR}
+          />
+        </div>
       </Paper>
     </div>
   );
