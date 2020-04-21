@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-
+import { GraphModeContext } from './GraphModeContext';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { ReportsBlock } from '../ReportsBlock';
@@ -55,17 +55,20 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
+  const [graphMode, setGraphMode] = useState('confirmed');
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
-      const selectedCountries = data.Day[0].Reports.slice(0, 3).map((report: any) => {
-        const country = {
-          name: report.Location.name,
-          id: report.Location.id,
-          ...report
-        }
-        return country;
-      });
+      const selectedCountries = data.Day[0].Reports
+        .slice(0, 3)
+        .map((report: any) => {
+          const country = {
+            name: report.Location.name,
+            id: report.Location.id,
+            ...report
+          };
+          return country;
+        });
       setSelectedCountries(selectedCountries);
     }
   });
@@ -81,36 +84,39 @@ const GraphPage: React.FC = () => {
       setSelectedCountries(updatedCountries);
     }
   };
+  const updateMode = (mode: string) => {
+    setGraphMode(mode);
+  }
 
   if (getCountriesData && getCountriesData.Day) {
-    countries = getCountriesData.Day[0].Reports.map(
-      (report: any) => {
-        const country = {
-          name: report.Location.name,
-          id: report.Location.id,
-          ...report
-        }
-        return country;
-      }
-    );
+    countries = getCountriesData.Day[0].Reports.map((report: any) => {
+      const country = {
+        name: report.Location.name,
+        id: report.Location.id,
+        ...report
+      };
+      return country;
+    });
   }
 
   return (
-    <div className={classes.root}>
-      <div className={classes.mainSection}>
-        <div className={classes.totalWrapper}>
-          <WorldStatsBlock />
+    <GraphModeContext.Provider value={{mode: graphMode, updateMode }}>
+      <div className={classes.root}>
+        <div className={classes.mainSection}>
+          <div className={classes.totalWrapper}>
+            <WorldStatsBlock />
+          </div>
+          <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
+            <ReportsBlock selectedCountries={selectedCountries} />
+          </div>
         </div>
-        <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-          <ReportsBlock selectedCountries={selectedCountries} />
-        </div>
+        <ListOfCountries
+          countries={countries}
+          selectedCountries={selectedCountries}
+          updateCountry={updateCountry}
+        />
       </div>
-      <ListOfCountries
-        countries={countries}
-        selectedCountries={selectedCountries}
-        updateCountry={updateCountry}
-      />
-    </div>
+    </GraphModeContext.Provider>
   );
 };
 

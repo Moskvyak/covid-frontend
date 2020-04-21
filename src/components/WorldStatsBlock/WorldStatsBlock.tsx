@@ -70,21 +70,25 @@ const WorldStatsBlock: React.FC = React.memo(() => {
         <div className={classes.fadeIn}>
           <WorldStatsBlockSection
             title="Confirmed"
+            mode="confirmed"
             value={totalNumbers.confirmedTotal}
             color={CONFIRMED_COLOR}
           />
           <WorldStatsBlockSection
             title="Active"
+            mode="active"
             value={active}
             color={ACTIVE_COLOR}
           />
           <WorldStatsBlockSection
             title="Recovered"
+            mode="recovered"
             value={totalNumbers.recoveredTotal}
             color={RECOVERED_COLOR}
           />
           <WorldStatsBlockSection
             title="Deaths"
+            mode="deaths"
             value={totalNumbers.deathsTotal}
             noBorder
             color={DEATH_COLOR}

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
-
+import { GraphModeContext } from '../GraphPage/GraphModeContext';
 import {
   RECOVERED_COLOR,
   DEATH_COLOR,
@@ -25,26 +25,25 @@ const leftCornerProps: any = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-     height: '100%',
-     overflowY: 'scroll',
-     '&::-webkit-scrollbar':{
-      width: '2px'
+      height: '100%',
+      '&::-webkit-scrollbar': {
+        width: '2px'
+      },
+      '&::-webkit-scrollbar-track': {
+        background: '#f1f1f1'
+      },
+
+      /* Handle */
+      '&::-webkit-scrollbar-thumb': {
+        background: '#888'
+      },
+
+      /* Handle on hover */
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555'
+      }
     },
-    '&::-webkit-scrollbar-track': {
-      background: '#f1f1f1'
-    },
-     
-    /* Handle */
-    '&::-webkit-scrollbar-thumb': {
-      background: '#888'
-    },
-    
-    /* Handle on hover */
-    '&::-webkit-scrollbar-thumb:hover': {
-      background: '#555'
-    }
-    },
-    
+
     graphWrapper: {
       position: 'relative',
       width: '100%',
@@ -52,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 20,
       paddingRight: 40,
       paddingBottom: 40,
-      margin:'auto'
+      margin: 'auto'
     },
     name: {
       flex: 1,
@@ -95,6 +94,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   const activeData: any[] = [];
   const classes = useStyles();
 
+  const { mode } = useContext(GraphModeContext);
   countriesData.Day.forEach((dayItem: any) => {
     const confirmedReports: any = {};
     const recoveredReports: any = {};
@@ -133,40 +133,44 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   });
 
   return (
-      <div className={classes.root}>
-         <div className={classes.graphWrapper}>
-              <div className={classes.confirmed}>Confirmed</div>
-              {selectedCountries.length > 0 &&
-                <SimpleChart
-                  data={confirmedData}
-                  selectedCountries={selectedCountries}
-                />}
-            </div>
-            <div className={classes.graphWrapper}>
-              <div className={classes.active}>Active</div>
-              {selectedCountries.length > 0 &&
-                <SimpleChart
-                  data={activeData}
-                  selectedCountries={selectedCountries}
-                />}
-            </div>
-            <div className={classes.graphWrapper}>
-              <div className={classes.recovered}>Recovered</div>
-              {selectedCountries.length > 0 &&
-                <SimpleChart
-                  data={recoveredData}
-                  selectedCountries={selectedCountries}
-                />}
-            </div>
-            <div className={classes.graphWrapper}>
-              <div className={classes.deaths}>Deaths</div>
-              {selectedCountries.length > 0 &&
-                <SimpleChart
-                  data={deathsData}
-                  selectedCountries={selectedCountries}
-                />}
-            </div>
-      </div>
+    <div className={classes.root}>
+      {mode === 'confirmed' &&
+        <div className={classes.graphWrapper}>
+          <div className={classes.confirmed}>Confirmed</div>
+          {selectedCountries.length > 0 &&
+            <SimpleChart
+              data={confirmedData}
+              selectedCountries={selectedCountries}
+            />}
+        </div>}
+        {mode === 'active' &&
+      <div className={classes.graphWrapper}>
+        <div className={classes.active}>Active</div>
+        {selectedCountries.length > 0 &&
+          <SimpleChart
+            data={activeData}
+            selectedCountries={selectedCountries}
+          />}
+      </div>}
+      {mode === 'recovered' &&
+      <div className={classes.graphWrapper}>
+        <div className={classes.recovered}>Recovered</div>
+        {selectedCountries.length > 0 &&
+          <SimpleChart
+            data={recoveredData}
+            selectedCountries={selectedCountries}
+          />}
+      </div>}
+      {mode === 'deaths' &&
+      <div className={classes.graphWrapper}>
+        <div className={classes.deaths}>Deaths</div>
+        {selectedCountries.length > 0 &&
+          <SimpleChart
+            data={deathsData}
+            selectedCountries={selectedCountries}
+          />}
+      </div>}
+    </div>
   );
 };
 

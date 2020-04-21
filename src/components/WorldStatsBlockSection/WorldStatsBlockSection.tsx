@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { GraphModeContext } from '../GraphPage/GraphModeContext';
 import CountUp from 'react-countup';
 
 const useStyles = makeStyles((props: Props) =>
   createStyles({
-    root: {
-      display: 'flex',
-      padding: 24,
-      height: '100%'
-    },
-    section: {
+    section: (props: Props) => ({
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      borderRight: '1px solid #eee'
-    },
-    noBorder: {
+      borderRight: '1px solid #eee',
+      cursor: 'pointer',
+      '&:hover': {
+        color: `${props.color}`,
+        fontWeight: 500
+      }
+    }),
+    noBorder: () => ({
       borderRight: 0
-    },
+    }),
     sectionTitle: (props: Props) => ({
       fontSize: 20,
       marginTop: 0,
@@ -52,15 +53,17 @@ const useStyles = makeStyles((props: Props) =>
 interface Props {
   value: number;
   title: string;
+  mode: string;
   noBorder?: boolean;
   color: string;
 }
 
 const WorldStatsBlockSection: React.FC<Props> = (props: Props) => {
   const classes = useStyles(props);
+  const { updateMode } = useContext(GraphModeContext);
   const rootClass = props.noBorder? `${classes.section} ${classes.noBorder}` : classes.section
   return (
-    <div className={rootClass}>
+    <div className={rootClass} onClick={() => updateMode(props.mode)}>
       <h3 className={classes.sectionTitle}>
         {props.title}
       </h3>
