@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import Paper from '@material-ui/core/Paper';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { ReportsBlock } from '../ReportsBlock';
 import { ListOfCountries } from '../ListOfCountries';
+import { WorldStatsBlock } from '../WorldStatsBlock';
 import { GET_COUNTRIES } from '../../graphql/queries';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -83,9 +83,9 @@ const GraphPage: React.FC = () => {
   return (
     <div className={classes.root}>
       <div className={classes.mainSection}>
-        <Paper className={classes.totalWrapper}>
-            2,000,000
-        </Paper>
+        <div className={classes.totalWrapper}>
+            <WorldStatsBlock />
+        </div>
         <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
 
         <ReportsBlock selectedCountries={selectedCountries} />
