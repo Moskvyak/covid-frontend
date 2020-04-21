@@ -2,89 +2,52 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import { ReportsBlock } from '../ReportsBlock';
-import { CountryListItem } from '../CountryListItem';
-import { CountryListHeader } from '../CountryListHeader';
+import { ListOfCountries } from '../ListOfCountries';
+import { WorldStatsBlock } from '../WorldStatsBlock';
 import { GET_COUNTRIES } from '../../graphql/queries';
-
-const drawerWidth = 380;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex'
+      display: 'flex',
+      padding: 32,
+      height: '100%'
     },
-    appBar: {
+    mainSection: {
+      flex: 1,
+      paddingRight: 32,
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    totalWrapper: {
+      flex: '0 0 100px',
       width: '100%',
-      padding: 20
+      marginBottom: 20
     },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-      marginTop: 30,
-      height: 'calc(100% - 30px)'
+    graphsWrapper: {
+      flex: 1
     },
-    listItem: {
-      width: '100%',
-      margin: 0
-    },
-    loading: {
-      padding: 20
-    },
-    drawerPaper: {
-      width: drawerWidth,
-      marginTop: 30,
-      height: 'calc(100% - 30px)'
-    },
-    closed: {
-      width: 0
-    },
-    '@keyframes appear': {
-      from: { opacity: 0 },
-      to: { opacity: 1 }
-    },
-    fadeIn: {
-      animationName: '$appear',
-      animationDuration: '1s',
-      animationTimingFunction: 'linear'
-    },
-    isEven: {
-      background: 'rgba(227,242,253, 0.3)'
-    },
-    extendedIcon: {
-      marginRight: theme.spacing(0.5)
-    },
-    openButton: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      borderBottomLeftRadius: 0,
-      borderTopLeftRadius: 0,
-      width: 30,
-      height: 30,
-      background: '#FFF',
-      border: '1px solid #eee',
-      borderTop: 0
-    },
-    closeButton: {
-      position: 'fixed',
-      top: 0,
-      left: drawerWidth,
-      borderBottomLeftRadius: 0,
-      borderTopLeftRadius: 0,
-      width: 30,
-      height: 30,
-      background: '#FFF',
-      border: '1px solid #eee',
-      borderTop: 0
+    scroll: {
+      overflowY: 'scroll',
+      '&::-webkit-scrollbar': {
+        width: '2px'
+      },
+      '&::-webkit-scrollbar-track': {
+        background: '#f1f1f1'
+      },
+
+      /* Handle */
+      '&::-webkit-scrollbar-thumb': {
+        background: '#888'
+      },
+
+      /* Handle on hover */
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555'
+      }
     }
   })
 );
@@ -92,11 +55,18 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
-  const [drawerOpened, setDrawerOpened] = useState(true);
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
-      setSelectedCountries(data.Location.slice(0, 3));
+      const selectedCountries = data.Day[0].Reports.slice(0, 3).map((report: any) => {
+        const country = {
+          name: report.Location.name,
+          id: report.Location.id,
+          ...report
+        }
+        return country;
+      });
+      setSelectedCountries(selectedCountries);
     }
   });
 
@@ -112,96 +82,34 @@ const GraphPage: React.FC = () => {
     }
   };
 
-  if (getCountriesData && getCountriesData.Location) {
-    countries = getCountriesData.Location.filter(
-      (location: any) => location.Reports.length
+  if (getCountriesData && getCountriesData.Day) {
+    countries = getCountriesData.Day[0].Reports.map(
+      (report: any) => {
+        const country = {
+          name: report.Location.name,
+          id: report.Location.id,
+          ...report
+        }
+        return country;
+      }
     );
   }
-  const drawerClass = drawerOpened
-    ? classes.drawer
-    : `${classes.drawer} ${classes.closed}`;
+
   return (
     <div className={classes.root}>
-      <Drawer
-        className={drawerClass}
-        variant={'persistent'}
-        open={drawerOpened}
-        classes={{
-          paper: classes.drawerPaper
-        }}
-        anchor="left"
-      >
-        {countries.length > 0 &&
-          <div className={classes.fadeIn}>
-            {countries.map((country: any, index: number) => {
-              const isSelected = !!selectedCountries.find(
-                (selC: any) => selC.id === country.id
-              );
-              const isEven = index % 2 === 1;
-              const rootClassName = isEven
-                ? `${classes.listItem} ${classes.isEven}`
-                : classes.listItem;
-              return (
-                <div key={country.id}>
-                  <FormControlLabel
-                    className={rootClassName}
-                    control={
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => updateCountry(country)}
-                        value={country.id}
-                        color="primary"
-                      />
-                    }
-                    label={
-                      <CountryListItem
-                        name={country.name}
-                        confirmed={country.Reports[0].confirmedTotal}
-                        recovered={country.Reports[0].recoveredTotal}
-                        deaths={country.Reports[0].deathsTotal}
-                      />
-                    }
-                  />
-                </div>
-              );
-            })}
-          </div>}
-        {!countries.length &&
-          <div className={classes.loading}>
-            <p>Loading locations...</p>
-            <LinearProgress />
-          </div>}
-      </Drawer>
-      {drawerOpened && 
-      <div  style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: drawerWidth,
-        height: 30,
-        background: '#FFF'
-      }}>
-       <CountryListHeader />
-       </div>}
-      {drawerOpened &&
-        <IconButton
-          className={classes.closeButton}
-          size="small"
-          aria-label="close"
-          onClick={() => setDrawerOpened(false)}
-        >
-          <ChevronLeftIcon className={classes.extendedIcon} />
-        </IconButton>}
-        {!drawerOpened &&
-        <IconButton
-          className={classes.openButton}
-          size="small"
-          aria-label="close"
-          onClick={() => setDrawerOpened(true)}
-        >
-          <ChevronRightIcon className={classes.extendedIcon} />
-        </IconButton>}
-      <ReportsBlock selectedCountries={selectedCountries} />
+      <div className={classes.mainSection}>
+        <div className={classes.totalWrapper}>
+          <WorldStatsBlock />
+        </div>
+        <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
+          <ReportsBlock selectedCountries={selectedCountries} />
+        </div>
+      </div>
+      <ListOfCountries
+        countries={countries}
+        selectedCountries={selectedCountries}
+        updateCountry={updateCountry}
+      />
     </div>
   );
 };
