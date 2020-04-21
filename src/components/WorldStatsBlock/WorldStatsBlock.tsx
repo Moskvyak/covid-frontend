@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Paper from '@material-ui/core/Paper';
-
+import { useCountUp } from 'react-countup';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
+import { WorldStatsBlockSection } from '../WorldStatsBlockSection'
 import { GET_TOTAL_NUMBERS } from '../../graphql/queries';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRight: '1px solid #eee'
     },
     noBorder: {
-        borderRight: 0
+      borderRight: 0
     },
     sectionTitle: {
       fontSize: 20,
@@ -28,9 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center'
     },
     sectionBody: {
-        fontSize: 18,
-        textAlign: 'center'
-      },
+      fontSize: 18,
+      textAlign: 'center'
+    },
     scroll: {
       overflowY: 'scroll',
       '&::-webkit-scrollbar': {
@@ -60,7 +61,7 @@ const WorldStatsBlock: React.FC = () => {
     deathsTotal: 0
   });
   const classes = useStyles();
-  const { data: getCountriesData } = useQuery(GET_TOTAL_NUMBERS, {
+  useQuery(GET_TOTAL_NUMBERS, {
     onCompleted: (data: any) => {
       setTotalNumbers({
         confirmedTotal: 2405104,
@@ -69,26 +70,18 @@ const WorldStatsBlock: React.FC = () => {
       });
     }
   });
-  const active = totalNumbers.confirmedTotal - totalNumbers.recoveredTotal - totalNumbers.deathsTotal;
+
+  const active =
+    totalNumbers.confirmedTotal -
+    totalNumbers.recoveredTotal -
+    totalNumbers.deathsTotal;
 
   return (
     <Paper className={classes.root}>
-      <div className={classes.section}>
-        <h3 className={classes.sectionTitle}>Confirmed</h3>
-        <div className={classes.sectionBody}>{totalNumbers.confirmedTotal}</div>
-      </div>
-      <div className={classes.section}>
-        <h3 className={classes.sectionTitle}>Active</h3>
-        <div className={classes.sectionBody}>{active}</div>
-      </div>
-      <div className={classes.section}>
-        <h3 className={classes.sectionTitle}>Recovered</h3>
-        <div className={classes.sectionBody}>{totalNumbers.recoveredTotal}</div>
-      </div>
-      <div className={`${classes.section} ${classes.noBorder}`}>
-        <h3 className={classes.sectionTitle}>Deaths</h3>
-        <div className={classes.sectionBody}>{totalNumbers.deathsTotal}</div>
-      </div>
+      <WorldStatsBlockSection title="Confirmed" value={totalNumbers.confirmedTotal} />
+      <WorldStatsBlockSection title="Active" value={active} />
+      <WorldStatsBlockSection title="Recovered" value={totalNumbers.recoveredTotal} />
+      <WorldStatsBlockSection title="Deaths" value={totalNumbers.deathsTotal} noBorder/>
     </Paper>
   );
 };
