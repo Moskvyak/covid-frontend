@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Paper from '@material-ui/core/Paper';
-import { useCountUp } from 'react-countup';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { WorldStatsBlockSection } from '../WorldStatsBlockSection'
 import { GET_TOTAL_NUMBERS } from '../../graphql/queries';
+
+import {
+  RECOVERED_COLOR,
+  DEATH_COLOR,
+  CONFIRMED_COLOR,
+  ACTIVE_COLOR
+} from '../../data';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,43 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       padding: 24,
       height: '100%'
-    },
-    section: {
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      borderRight: '1px solid #eee'
-    },
-    noBorder: {
-      borderRight: 0
-    },
-    sectionTitle: {
-      fontSize: 20,
-      marginTop: 0,
-      textAlign: 'center'
-    },
-    sectionBody: {
-      fontSize: 18,
-      textAlign: 'center'
-    },
-    scroll: {
-      overflowY: 'scroll',
-      '&::-webkit-scrollbar': {
-        width: '2px'
-      },
-      '&::-webkit-scrollbar-track': {
-        background: '#f1f1f1'
-      },
-
-      /* Handle */
-      '&::-webkit-scrollbar-thumb': {
-        background: '#888'
-      },
-
-      /* Handle on hover */
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: '#555'
-      }
     }
   })
 );
@@ -77,11 +46,11 @@ const WorldStatsBlock: React.FC = () => {
     totalNumbers.deathsTotal;
 
   return (
-    <Paper className={classes.root}>
-      <WorldStatsBlockSection title="Confirmed" value={totalNumbers.confirmedTotal} />
-      <WorldStatsBlockSection title="Active" value={active} />
-      <WorldStatsBlockSection title="Recovered" value={totalNumbers.recoveredTotal} />
-      <WorldStatsBlockSection title="Deaths" value={totalNumbers.deathsTotal} noBorder/>
+    <Paper className={classes.root} elevation={2}>
+      <WorldStatsBlockSection title="Confirmed" value={totalNumbers.confirmedTotal} color={CONFIRMED_COLOR}/>
+      <WorldStatsBlockSection title="Active" value={active}  color={ACTIVE_COLOR}/>
+      <WorldStatsBlockSection title="Recovered" value={totalNumbers.recoveredTotal} color={RECOVERED_COLOR}/>
+      <WorldStatsBlockSection title="Deaths" value={totalNumbers.deathsTotal} noBorder color={DEATH_COLOR}/>
     </Paper>
   );
 };

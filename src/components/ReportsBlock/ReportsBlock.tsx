@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
+import Paper from '@material-ui/core/Paper';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
@@ -10,8 +11,8 @@ import { GET_CONTRIES_REPORTS } from '../../graphql/queries';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
-      height: '100%'
+      height: 'calc(100% - 2px)',
+      padding: 24
     },
     '@keyframes appear': {
       from: { opacity: 0 },
@@ -43,7 +44,7 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
   });
 
   return (
-    <div className={classes.root}>
+    <Paper className={classes.root} elevation={3}>
       {getCountriesReportsData &&
         getCountriesReportsData.Day &&
         <div className={classes.fadeIn}>
@@ -52,7 +53,7 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
             countriesData={getCountriesReportsData}
           />
         </div>}
-    </div>
+    </Paper>
   );
 };
 

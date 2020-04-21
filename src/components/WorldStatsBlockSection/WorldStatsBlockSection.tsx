@@ -1,9 +1,8 @@
 import React from 'react';
-import { useCountUp } from 'react-countup';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import CountUp from 'react-countup';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((props: Props) =>
   createStyles({
     root: {
       display: 'flex',
@@ -19,11 +18,12 @@ const useStyles = makeStyles((theme: Theme) =>
     noBorder: {
       borderRight: 0
     },
-    sectionTitle: {
+    sectionTitle: (props: Props) => ({
       fontSize: 20,
       marginTop: 0,
-      textAlign: 'center'
-    },
+      textAlign: 'center',
+      color: props.color
+    }),
     sectionBody: {
       fontSize: 18,
       textAlign: 'center'
@@ -52,11 +52,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   value: number;
   title: string;
-  noBorder?: boolean
+  noBorder?: boolean;
+  color: string;
 }
 
 const WorldStatsBlockSection: React.FC<Props> = (props: Props) => {
-  const classes = useStyles();
+  const classes = useStyles(props);
   const rootClass = props.noBorder? `${classes.section} ${classes.noBorder}` : classes.section
   return (
     <div className={rootClass}>

@@ -10,7 +10,7 @@ import { GET_COUNTRIES } from '../../graphql/queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-     root: {
+    root: {
       display: 'flex',
       padding: 32,
       height: '100%'
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '&::-webkit-scrollbar-thumb:hover': {
         background: '#555'
       }
-    },
+    }
   })
 );
 
@@ -84,11 +84,10 @@ const GraphPage: React.FC = () => {
     <div className={classes.root}>
       <div className={classes.mainSection}>
         <div className={classes.totalWrapper}>
-            <WorldStatsBlock />
+          <WorldStatsBlock />
         </div>
         <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-
-        <ReportsBlock selectedCountries={selectedCountries} />
+          <ReportsBlock selectedCountries={selectedCountries} />
         </div>
       </div>
       <ListOfCountries

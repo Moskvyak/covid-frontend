@@ -151,8 +151,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   });
 
   return (
-    <React.Fragment>
-      <Paper elevation={3} className={classes.root}>
+      <div className={classes.root}>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <div className={classes.graphWrapper}>
               <div className={classes.confirmed}>Confirmed</div>
@@ -194,8 +193,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
                 />}
             </div>
           </Grid>
-      </Paper>
-    </React.Fragment>
+      </div>
   );
 };
 
