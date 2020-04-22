@@ -16,25 +16,26 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       height: 30,
-      width: 360,
+      marginLeft: 36,
+      width: 320,
       alignItems: 'center'
     },
     name: {
       flex: 1,
       fontSize,
-      textAlign: 'center'
+      textAlign: 'left'
     },
     stats: {
-      flex: '0 0 220px',
+      flex: '0 0 248px',
       display: 'flex',
       marginLeft: 8
     },
     item: {
       fontSize,
-      width: 56,
+      width: '25%',
       marginLeft: 1,
       marginRight: 1,
-      textAlign: 'center'
+      textAlign: 'right'
     },
     confirmed: {
       color: CONFIRMED_COLOR,
