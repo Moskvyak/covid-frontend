@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      width: 310,
+      width: 320,
       alignItems: 'center'
     },
     name: {
@@ -31,13 +31,13 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: '12px'
     },
     stats: {
-      flex: '0 0 220px',
+      flex: '0 0 248px',
       display: 'flex',
       marginLeft: 8
     },
     item: {
       fontSize,
-      width: 56,
+      width: '25%',
       marginLeft: 1,
       marginRight: 1,
       textAlign: 'right'
