@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
 
 import { CountryListItem } from '../CountryListItem';
 import { CountryListHeader } from '../CountryListHeader';
@@ -17,11 +20,12 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%'
     },
     root: {
-      height: 'calc(100% - 2px)',
+      height: 'calc(100% - 2px)'
     },
     title: {
-        marginTop: 0,
-        paddingLeft: 8
+      marginTop: 0,
+      marginBottom: 0,
+      paddingLeft: 8
     },
     container: {
       height: '100%',
@@ -53,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawer: {
       width: drawerWidth,
-      flex: 1,
+      flex: 1
     },
     listItem: {
       width: '100%',
@@ -73,6 +77,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     isEven: {
       background: 'rgba(227,242,253, 0.3)'
+    },
+    titleHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: 8,
+      alignItems: 'center'
+    },
+    search: {
+      margin: theme.spacing(1),
+      marginTop: 0,
+      marginBottom: 0
     }
   })
 );
@@ -86,18 +101,42 @@ interface Props {
 const ListOfCountries: React.FC<Props> = (props: Props) => {
   const classes = useStyles();
   const { selectedCountries, updateCountry, countries } = props;
-
+  const [filter, setFilter] = useState('');
+  const filteredCountries = countries.filter((country: any) =>
+    country.name.toLowerCase().includes(filter.toLowerCase().trim())
+  );
+  const onFilterChange = (e: any) => {
+    setFilter(e.target.value);
+  };
   return (
     <div className={classes.root}>
       <Paper className={`${classes.container}`} elevation={1}>
-        <h1 className={classes.title}>Countries</h1>
+        <div className={classes.titleHeader}>
+          <h1 className={classes.title}>Countries</h1>
+          <TextField
+            className={classes.search}
+            id="filter-country-textfield"
+            variant="outlined"
+            margin="dense"
+            value={filter}
+            onChange={onFilterChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              )
+            }}
+          />
+        </div>
+
         <div className={classes.header}>
           <CountryListHeader />
         </div>
         <div className={`${classes.drawer} ${classes.scroll}`}>
           {countries.length > 0 &&
             <div className={classes.fadeIn}>
-              {countries.map((country: any, index: number) => {
+              {filteredCountries.map((country: any, index: number) => {
                 const isSelected = !!selectedCountries.find(
                   (selC: any) => selC.id === country.id
                 );
