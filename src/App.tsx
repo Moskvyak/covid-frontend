@@ -5,7 +5,8 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { ListOfCountries} from './components/ListOfCountries';
+import { LocalizationProvider } from '@material-ui/pickers';
+import MomentUtils from '@material-ui/pickers/adapter/moment';
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL
@@ -25,10 +26,12 @@ function App() {
   const classes = useStyles();
   return (
     <ApolloProvider client={client}>
-      <div className={classes.root}>
-        <CssBaseline />
+      <LocalizationProvider dateAdapter={MomentUtils}>
+        <div className={classes.root}>
+          <CssBaseline />
           <GraphPage />
-      </div>
+        </div>
+      </LocalizationProvider>
     </ApolloProvider>
   );
 }

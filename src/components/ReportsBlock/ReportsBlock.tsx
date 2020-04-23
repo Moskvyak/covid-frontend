@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import moment from 'moment';
 import { useQuery } from '@apollo/react-hooks';
 import Paper from '@material-ui/core/Paper';
-
+import { DatePicker } from '@material-ui/pickers';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { CasesGraphs } from '../CasesGraphs';
@@ -38,17 +39,29 @@ interface Props {
 
 const ReportsBlock: React.FC<Props> = (props: Props) => {
   const { selectedCountries } = props;
+  const today = moment();
+  console.log(moment().format());
+  const weekBefore = today.subtract(7, 'days').format('YYYY-MM-DD');
+  console.log({ weekBefore });
+  const [startDate, setStartDate]: any = useState(weekBefore);
   const classes = useStyles();
 
   const { data: getCountriesReportsData } = useQuery(GET_CONTRIES_REPORTS, {
     variables: {
-      locationName: selectedCountries.map((country: any) => country.name)
+      locationName: selectedCountries.map((country: any) => country.name),
+      startDate
     }
   });
 
   return (
     <div className={classes.root}>
       <Paper className={`${classes.container}`} elevation={1}>
+        <DatePicker
+          focused={true}
+          label="Basic example"
+          value={startDate}
+          onChange={date => setStartDate(date)}
+        />
         {getCountriesReportsData &&
           getCountriesReportsData.Day &&
           <div className={classes.fadeIn}>
