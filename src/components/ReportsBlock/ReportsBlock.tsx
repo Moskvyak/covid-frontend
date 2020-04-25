@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import moment from 'moment';
 import { useQuery } from '@apollo/react-hooks';
 import Paper from '@material-ui/core/Paper';
-import { DatePicker } from '@material-ui/pickers';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-
+import { DateRange } from '@material-ui/pickers';
 import { CasesGraphs } from '../CasesGraphs';
 
 import { GET_CONTRIES_REPORTS } from '../../graphql/queries';
@@ -17,8 +16,16 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       height: '100%',
       padding: 24,
+      position: 'relative',
       display: 'flex',
       flexDirection: 'column'
+    },
+    datePickerWrapper: {
+      position: 'absolute',
+      left: '50%',
+      top: 24,
+      transform: 'translate(-50%, 0)',
+      zIndex: 100
     },
     '@keyframes appear': {
       from: { opacity: 0 },
@@ -40,32 +47,30 @@ interface Props {
 const ReportsBlock: React.FC<Props> = (props: Props) => {
   const { selectedCountries } = props;
   const today = moment();
-  console.log(moment().format());
-  const weekBefore = today.subtract(7, 'days').format('YYYY-MM-DD');
-  console.log({ weekBefore });
-  const [startDate, setStartDate]: any = useState(weekBefore);
+  const monthAgo = today.subtract(1, 'month');
+  const [selectedRange, handleDateChange] = React.useState<DateRange>([
+    monthAgo,
+    null
+  ]);
   const classes = useStyles();
 
   const { data: getCountriesReportsData } = useQuery(GET_CONTRIES_REPORTS, {
     variables: {
       locationName: selectedCountries.map((country: any) => country.name),
-      startDate
+      startDate: selectedRange[0],
+      endDate: selectedRange[1]
     }
   });
 
   return (
     <div className={classes.root}>
       <Paper className={`${classes.container}`} elevation={1}>
-        <DatePicker
-          focused={true}
-          label="Basic example"
-          value={startDate}
-          onChange={date => setStartDate(date)}
-        />
         {getCountriesReportsData &&
           getCountriesReportsData.Day &&
           <div className={classes.fadeIn}>
             <CasesGraphs
+              handleDateChange={handleDateChange}
+              selectedRange={selectedRange}
               selectedCountries={selectedCountries}
               countriesData={getCountriesReportsData}
             />
