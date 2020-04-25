@@ -20,13 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column'
     },
-    datePickerWrapper: {
-      position: 'absolute',
-      left: '50%',
-      top: 24,
-      transform: 'translate(-50%, 0)',
-      zIndex: 100
-    },
     '@keyframes appear': {
       from: { opacity: 0 },
       to: { opacity: 1 }
