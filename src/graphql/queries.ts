@@ -1,8 +1,12 @@
 import gql from 'graphql-tag';
 
 export const GET_CONTRIES_REPORTS = gql`
-  query MyQuery($locationName: [String!]) {
-    Day {
+  query MyQuery(
+    $locationName: [String!]
+    $startDate: timestamptz
+    $endDate: timestamptz
+  ) {
+    Day(where: { date: { _gte: $startDate, _lte: $endDate } }) {
       date
       id
       Reports(

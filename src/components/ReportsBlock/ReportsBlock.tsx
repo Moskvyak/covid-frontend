@@ -1,9 +1,9 @@
 import React from 'react';
+import moment from 'moment';
 import { useQuery } from '@apollo/react-hooks';
 import Paper from '@material-ui/core/Paper';
-
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-
+import { DateRange } from '@material-ui/pickers';
 import { CasesGraphs } from '../CasesGraphs';
 
 import { GET_CONTRIES_REPORTS } from '../../graphql/queries';
@@ -38,11 +38,19 @@ interface Props {
 
 const ReportsBlock: React.FC<Props> = (props: Props) => {
   const { selectedCountries } = props;
+  const today = moment();
+  const monthAgo = today.subtract(1, 'month');
+  const [selectedRange, handleDateChange] = React.useState<DateRange>([
+    monthAgo,
+    null
+  ]);
   const classes = useStyles();
 
   const { data: getCountriesReportsData } = useQuery(GET_CONTRIES_REPORTS, {
     variables: {
-      locationName: selectedCountries.map((country: any) => country.name)
+      locationName: selectedCountries.map((country: any) => country.name),
+      startDate: selectedRange[0],
+      endDate: selectedRange[1]
     }
   });
 
@@ -53,6 +61,8 @@ const ReportsBlock: React.FC<Props> = (props: Props) => {
           getCountriesReportsData.Day &&
           <div className={classes.fadeIn}>
             <CasesGraphs
+              handleDateChange={handleDateChange}
+              selectedRange={selectedRange}
               selectedCountries={selectedCountries}
               countriesData={getCountriesReportsData}
             />
