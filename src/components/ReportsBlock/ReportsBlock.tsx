@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       height: '100%',
       padding: 24,
-      position: 'relative',
       display: 'flex',
       flexDirection: 'column'
     },
