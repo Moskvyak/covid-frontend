@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { GraphModeContext } from '../GraphPage/GraphModeContext';
+import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 import CountUp from 'react-countup';
 
 const useStyles = makeStyles((props: Props) =>
