@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
-import { GraphModeContext } from '../GraphPage/GraphModeContext';
+import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 import { DateRangePicker, DateRange } from '@material-ui/pickers';
 
 import {

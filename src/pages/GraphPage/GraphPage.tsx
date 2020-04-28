@@ -3,9 +3,9 @@ import { useQuery } from '@apollo/react-hooks';
 import { GraphModeContext } from './GraphModeContext';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
-import { ReportsBlock } from '../ReportsBlock';
-import { ListOfCountries } from '../ListOfCountries';
-import { WorldStatsBlock } from '../WorldStatsBlock';
+import { ReportsBlock } from '../../components/ReportsBlock';
+import { ListOfCountries } from '../../components/ListOfCountries';
+import { WorldStatsBlock } from '../../components/WorldStatsBlock';
 import { GET_COUNTRIES } from '../../graphql/queries';
 
 const useStyles = makeStyles((theme: Theme) =>
