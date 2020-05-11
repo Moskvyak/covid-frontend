@@ -19,11 +19,12 @@ import ListItem from '@material-ui/core/ListItem';
 
 import { GraphPage } from './pages/GraphPage';
 import { AboutPage } from './pages/AboutPage';
+import { Typography } from '@material-ui/core';
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL
 });
-const drawerWidth = 120;
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,6 +41,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawerPaper: {
       width: drawerWidth
+    },
+    menuItem: {
+      fontSize: 20,
+      paddingLeft: theme.spacing(2)
+    },
+    menuItemSelected: {
+      color: theme.palette.primary.main
+    },
+    menuHeader: {
+      paddingLeft: theme.spacing(2),
+      paddingTop: theme.spacing(3),
+      paddingBottom: theme.spacing(3),
+      borderBottom: '1px solid #ccc'
     }
   })
 );
@@ -58,11 +72,15 @@ function App() {
             }}
             anchor="left"
           >
+            <div>
+              <Typography variant="h4" component="h1" className={classes.menuHeader}>COVID 19 info</Typography>
+            </div>
             <ListItem
               button
+              className={classes.menuItem}
               component={NavLink}
               to="/graphs"
-              activeClassName="Mui-selected"
+              activeClassName={classes.menuItemSelected}
               exact
             >
               Graphs
@@ -70,8 +88,9 @@ function App() {
             <ListItem
               button
               component={NavLink}
+              className={classes.menuItem}
               to="/about"
-              activeClassName="Mui-selected"
+              activeClassName={classes.menuItemSelected}
               exact
             >
               About
