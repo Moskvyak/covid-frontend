@@ -53,7 +53,6 @@ class CustomizedYAxisTick extends React.PureComponent<any, any> {
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
-  console.log({ payload, label });
   if (active) {
     return (
       <Paper
@@ -63,18 +62,47 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         }}
       >
         <h3 style={{ marginTop: 0 }}>{`${label}`}</h3>
-        {payload.map((item: any) => {
-          return (
-            <p key={item.name} style={{
-              color: item.color,
-              marginBottom: 0,
-              fontSize: 12
-            }}>
-              {item.name} -{' '}
-              {applyThousandSeparator(item.value.toString(), ',', 'thousand')}
-            </p>
-          );
-        })}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'auto auto',
+            alignItems: 'center',
+            gap: '8px 8px'
+          }}
+        >
+          {payload.map((item: any) => {
+            return (
+              <React.Fragment key={item.name}>
+                <div
+                  style={{
+                    color: item.color,
+                    fontSize: 12
+                  }}
+                >
+                  <span>
+                    {item.name}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    color: item.color,
+                    fontSize: 12,
+                    textAlign: 'right'
+                  }}
+                >
+                  <span>
+                    {applyThousandSeparator(
+                      item.value.toString(),
+                      ',',
+                      'thousand'
+                    )}
+                  </span>
+                </div>
+              </React.Fragment>
+            );
+          })}
+        </div>
       </Paper>
     );
   }
