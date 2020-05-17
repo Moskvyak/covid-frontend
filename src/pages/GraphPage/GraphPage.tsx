@@ -128,6 +128,7 @@ const GraphPage: React.FC = () => {
               countries={countries}
               selectedCountries={selectedCountries}
               updateCountry={updateCountry}
+              graphMode={graphMode}
             />
           </div>
           <div className={`${classes.graphsWrapper} ${classes.scroll}`}>

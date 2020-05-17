@@ -1,9 +1,12 @@
-import React  from 'react';
+import React from 'react';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
 import { colors } from '../../data';
+
+import { applyThousandSeparator } from '../../utils/formatter';
+
 const drawerWidth = 380;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,7 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column'
     },
     header: {
-      flex: '0 0 auto'
+      width: '100%',
+      flex: '0 0 auto',
+      display: 'flex'
     },
     scroll: {
       overflowY: 'scroll',
@@ -50,6 +55,21 @@ const useStyles = makeStyles((theme: Theme) =>
     drawer: {
       width: drawerWidth,
       flex: 1
+    },
+    name: {
+      fontSize: 12,
+      width: 100
+    },
+    control: {
+      width: 12,
+      height: 12,
+      marginRight: 8,
+      marginLeft: 8
+    },
+    item: {
+      fontSize: 12,
+      width: 100,
+      textAlign: 'right'
     },
     listItem: {
       width: '100%',
@@ -91,20 +111,83 @@ interface Props {
   countries: any[];
   selectedCountries: any[];
   updateCountry: (country: any) => void;
+  graphMode: string;
 }
 
+function sortByConfirmed(
+  keyToCompare: string,
+  sort: 'asc' | 'desc',
+  a: any,
+  b: any
+) {
+  if (a[keyToCompare] > b[keyToCompare]) {
+    return -1;
+  }
+  if (a[keyToCompare] < b[keyToCompare]) {
+    return 1;
+  }
+  // a must be equal to b
+  return 0;
+}
+
+const applySort = (keyToCompare: string, sort: 'asc' | 'desc') => {
+  return (a: any, b: any) => sortByConfirmed(keyToCompare, sort, a, b);
+};
 const SelectedCountries: React.FC<Props> = (props: Props) => {
   const classes = useStyles();
   const { selectedCountries, updateCountry, countries } = props;
-  const filteredCountries = selectedCountries;
+  let keyToCompare = 'confirmedTotal';
+  let columnTitle = 'Confirmed';
+  switch (props.graphMode) {
+    case 'confirmed': {
+      keyToCompare = 'confirmedTotal';
+      columnTitle = 'Confirmed';
+      break;
+    }
+    case 'active': {
+      keyToCompare = 'activeTotal';
+      columnTitle = 'Active';
+      break;
+    }
+    case 'recovered': {
+      keyToCompare = 'recoveredTotal';
+      columnTitle = 'Recovered';
+      break;
+    }
+    case 'deaths': {
+      keyToCompare = 'deathsTotal';
+      columnTitle = 'Deaths';
+      break;
+    }
+  }
+
+  const filteredCountries = selectedCountries
+    .map((country: any, index: number) => {
+      return {
+        ...country,
+        activeTotal:
+          country.confirmedTotal - country.recoveredTotal - country.deathsTotal,
+        color: colors[index],
+        onClick: () => updateCountry(country)
+      };
+    })
+    .sort(applySort(keyToCompare, 'desc'));
 
   return (
     <div className={classes.root}>
       <Paper className={`${classes.container}`} elevation={1}>
         <div className={classes.titleHeader}>
-          <h1 className={classes.title}>Selected countries</h1>
+          <h1 className={classes.title}>
+            Selected countries: { filteredCountries.length > 0 && filteredCountries.length}
+          </h1>
         </div>
-
+        {filteredCountries.length > 0 && <div className={classes.header}>
+          <div className={classes.control} />
+          <div className={classes.name}>Country</div>
+          <div className={classes.item}>
+            {columnTitle}
+          </div>
+        </div>}
         <div className={`${classes.drawer} ${classes.scroll}`}>
           {filteredCountries.length > 0 &&
             <div className={classes.fadeIn}>
@@ -115,17 +198,37 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
                   : classes.listItem;
                 return (
                   <div key={country.id} className={rootClassName}>
-                    <div onClick={() => updateCountry(country)} style={{backgroundColor:colors[index], width: 12, height: 12, marginRight: 8,marginLeft: 8,  borderColor: colors[index], cursor: 'pointer', borderRadius: '50%'}} />
-                    <div>
+                    <div
+                      onClick={country.onClick}
+                      className={classes.control}
+                      style={{
+                        backgroundColor: country.color,
+                        width: 12,
+                        height: 12,
+                        marginRight: 8,
+                        marginLeft: 8,
+                        borderColor: country.color,
+                        cursor: 'pointer',
+                        borderRadius: '50%'
+                      }}
+                    />
+                    <div className={classes.name}>
                       {country.name}
-                      </div>
+                    </div>
+                    <div className={classes.item}>
+                      {applyThousandSeparator(
+                        country[keyToCompare].toString(),
+                        ',',
+                        'thousand'
+                      )}
+                    </div>
                   </div>
                 );
               })}
             </div>}
-          {!countries.length &&
+          {!filteredCountries.length &&
             <div className={classes.loading}>
-              <p>Nothing selected</p>
+              <h3>Select the countries from the list below to compare</h3>
             </div>}
         </div>
       </Paper>
