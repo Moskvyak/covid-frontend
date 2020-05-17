@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 20
     },
     countriesWrapper: {
-      flex: '0 0 240px',
+      flex: '0 0 264px',
       width: '100%',
       marginBottom: 20
     },
@@ -128,7 +128,6 @@ const GraphPage: React.FC = () => {
               countries={countries}
               selectedCountries={selectedCountries}
               updateCountry={updateCountry}
-              graphMode={graphMode}
             />
           </div>
           <div className={`${classes.graphsWrapper} ${classes.scroll}`}>

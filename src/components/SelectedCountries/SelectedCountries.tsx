@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+
+import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 
 import { colors } from '../../data';
-
 import { applyThousandSeparator } from '../../utils/formatter';
 
+import {
+  RECOVERED_COLOR,
+  DEATH_COLOR,
+  CONFIRMED_COLOR,
+  ACTIVE_COLOR
+} from '../../data';
+
 const drawerWidth = 380;
+const fontSize = 12;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1
     },
     name: {
-      fontSize: 12,
+      fontSize,
       width: 100
     },
     control: {
@@ -67,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 8
     },
     item: {
-      fontSize: 12,
+      fontSize,
       width: 100,
       textAlign: 'right'
     },
@@ -103,6 +113,22 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
       marginTop: 0,
       marginBottom: 0
+    },
+    confirmed: {
+      fontSize,
+      color: CONFIRMED_COLOR
+    },
+    active: {
+      color: ACTIVE_COLOR,
+      fontSize
+    },
+    recovered: {
+      color: RECOVERED_COLOR,
+      fontSize
+    },
+    deaths: {
+      color: DEATH_COLOR,
+      fontSize
     }
   })
 );
@@ -111,7 +137,6 @@ interface Props {
   countries: any[];
   selectedCountries: any[];
   updateCountry: (country: any) => void;
-  graphMode: string;
 }
 
 function sortByConfirmed(
@@ -136,27 +161,34 @@ const applySort = (keyToCompare: string, sort: 'asc' | 'desc') => {
 const SelectedCountries: React.FC<Props> = (props: Props) => {
   const classes = useStyles();
   const { selectedCountries, updateCountry, countries } = props;
+  const { mode } = useContext(GraphModeContext);
   let keyToCompare = 'confirmedTotal';
   let columnTitle = 'Confirmed';
-  switch (props.graphMode) {
+  let columnClass = classes.confirmed;
+
+  switch (mode) {
     case 'confirmed': {
       keyToCompare = 'confirmedTotal';
       columnTitle = 'Confirmed';
+      columnClass = classes.confirmed;
       break;
     }
     case 'active': {
       keyToCompare = 'activeTotal';
       columnTitle = 'Active';
+      columnClass = classes.active;
       break;
     }
     case 'recovered': {
       keyToCompare = 'recoveredTotal';
       columnTitle = 'Recovered';
+      columnClass = classes.recovered;
       break;
     }
     case 'deaths': {
       keyToCompare = 'deathsTotal';
       columnTitle = 'Deaths';
+      columnClass = classes.deaths;
       break;
     }
   }
@@ -178,16 +210,18 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
       <Paper className={`${classes.container}`} elevation={1}>
         <div className={classes.titleHeader}>
           <h1 className={classes.title}>
-            Selected countries: { filteredCountries.length > 0 && filteredCountries.length}
+            Selected countries: {' '}
+            {filteredCountries.length > 0 && filteredCountries.length}
           </h1>
         </div>
-        {filteredCountries.length > 0 && <div className={classes.header}>
-          <div className={classes.control} />
-          <div className={classes.name}>Country</div>
-          <div className={classes.item}>
-            {columnTitle}
-          </div>
-        </div>}
+        {filteredCountries.length > 0 &&
+          <div className={classes.header}>
+            <div className={classes.control} />
+            <div className={classes.name}>Country</div>
+            <div className={`${classes.item} ${columnClass}`}>
+              {columnTitle}
+            </div>
+          </div>}
         <div className={`${classes.drawer} ${classes.scroll}`}>
           {filteredCountries.length > 0 &&
             <div className={classes.fadeIn}>
@@ -215,7 +249,7 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
                     <div className={classes.name}>
                       {country.name}
                     </div>
-                    <div className={classes.item}>
+                    <div className={`${classes.item}  ${columnClass}`}>
                       {applyThousandSeparator(
                         country[keyToCompare].toString(),
                         ',',
@@ -226,7 +260,12 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
                 );
               })}
             </div>}
-          {!filteredCountries.length &&
+          {!countries.length &&
+            <div className={classes.loading}>
+              <p>Loading locations...</p>
+              <LinearProgress />
+            </div>}
+          {countries.length >0 && !filteredCountries.length &&
             <div className={classes.loading}>
               <h3>Select the countries from the list below to compare</h3>
             </div>}
