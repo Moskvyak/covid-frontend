@@ -5,6 +5,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { ReportsBlock } from '../../components/ReportsBlock';
 import { ListOfCountries } from '../../components/ListOfCountries';
+import { SelectedCountries } from '../../components/SelectedCountries';
 import { WorldStatsBlock } from '../../components/WorldStatsBlock';
 import { GET_COUNTRIES } from '../../graphql/queries';
 
@@ -22,8 +23,19 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column'
     },
+    rightSection: {
+      flex: '0 0 auto',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    },
     totalWrapper: {
       flex: '0 0 100px',
+      width: '100%',
+      marginBottom: 20
+    },
+    countriesWrapper: {
+      flex: '0 0 240px',
       width: '100%',
       marginBottom: 20
     },
@@ -86,7 +98,7 @@ const GraphPage: React.FC = () => {
   };
   const updateMode = (mode: string) => {
     setGraphMode(mode);
-  }
+  };
 
   if (getCountriesData && getCountriesData.Day) {
     countries = getCountriesData.Day[0].Reports.map((report: any) => {
@@ -100,7 +112,7 @@ const GraphPage: React.FC = () => {
   }
 
   return (
-    <GraphModeContext.Provider value={{mode: graphMode, updateMode }}>
+    <GraphModeContext.Provider value={{ mode: graphMode, updateMode }}>
       <div className={classes.root}>
         <div className={classes.mainSection}>
           <div className={classes.totalWrapper}>
@@ -110,11 +122,22 @@ const GraphPage: React.FC = () => {
             <ReportsBlock selectedCountries={selectedCountries} />
           </div>
         </div>
-        <ListOfCountries
-          countries={countries}
-          selectedCountries={selectedCountries}
-          updateCountry={updateCountry}
-        />
+        <div className={classes.rightSection}>
+          <div className={`${classes.countriesWrapper}  ${classes.scroll}`}>
+            <SelectedCountries
+              countries={countries}
+              selectedCountries={selectedCountries}
+              updateCountry={updateCountry}
+            />
+          </div>
+          <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
+            <ListOfCountries
+              countries={countries}
+              selectedCountries={selectedCountries}
+              updateCountry={updateCountry}
+            />
+          </div>
+        </div>
       </div>
     </GraphModeContext.Provider>
   );
