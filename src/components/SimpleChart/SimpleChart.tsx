@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend
 } from 'recharts';
+import Paper from '@material-ui/core/Paper';
 import { applyThousandSeparator } from '../../utils/formatter';
 import { ResponsiveContainer } from '../ResponsiveContainer/ResponsiveContainer';
 interface Props {
@@ -50,6 +51,37 @@ class CustomizedYAxisTick extends React.PureComponent<any, any> {
     );
   }
 }
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  console.log({ payload, label });
+  if (active) {
+    return (
+      <Paper
+        style={{
+          padding: 16,
+          background: '#f5f5f5'
+        }}
+      >
+        <h3 style={{ marginTop: 0 }}>{`${label}`}</h3>
+        {payload.map((item: any) => {
+          return (
+            <p key={item.name} style={{
+              color: item.color,
+              marginBottom: 0,
+              fontSize: 12
+            }}>
+              {item.name} -{' '}
+              {applyThousandSeparator(item.value.toString(), ',', 'thousand')}
+            </p>
+          );
+        })}
+      </Paper>
+    );
+  }
+
+  return null;
+};
+
 const SimpleChart: React.FC<Props> = (props: Props) => {
   return (
     <ResponsiveContainer>
@@ -67,10 +99,10 @@ const SimpleChart: React.FC<Props> = (props: Props) => {
           );
         })}
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-        <XAxis dataKey="id" tick={<CustomizedXAxisTick />}/>
+        <XAxis dataKey="id" tick={<CustomizedXAxisTick />} />
         <YAxis tick={<CustomizedYAxisTick />} />
         <Legend verticalAlign="bottom" iconType="circle" iconSize={5} />
-        <Tooltip wrapperStyle={{ zIndex: 1000 }} />
+        <Tooltip wrapperStyle={{ zIndex: 1000 }} content={<CustomTooltip />} />
       </LineChart>
     </ResponsiveContainer>
   );
