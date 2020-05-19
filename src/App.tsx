@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       display: 'flex',
-      paddingTop: 20,
+      paddingTop: 48,
       flexDirection: 'column',
       height: 'calc(100% - 20px)',
       [theme.breakpoints.up('lg')]: {

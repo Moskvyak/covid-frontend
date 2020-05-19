@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 import CountUp from 'react-countup';
 
-const useStyles = makeStyles((props: Props) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     section: (props: Props) => ({
       flex: 1,
@@ -21,9 +21,15 @@ const useStyles = makeStyles((props: Props) =>
     }),
     sectionTitle: (props: Props) => ({
       fontSize: 20,
-      marginTop: 0,
+      marginTop: 16,
+      marginBottom: 0,
       textAlign: 'center',
-      color: props.color
+      color: props.color,
+      [theme.breakpoints.up('lg')]: {
+        fontSize: 20,
+        marginTop: 0,
+        marginBottom: 20,
+      }
     }),
     sectionBody: {
       fontSize: 18,

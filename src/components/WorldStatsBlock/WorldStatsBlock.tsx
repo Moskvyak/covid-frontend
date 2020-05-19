@@ -30,8 +30,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       height: '100%',
       animationName: '$appear',
+      flexDirection: 'column',
       animationDuration: '1s',
-      animationTimingFunction: 'linear'
+      animationTimingFunction: 'linear',
+      [theme.breakpoints.up('lg')]: {
+        flexDirection: 'row'
+      }
     }
   })
 );

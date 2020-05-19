@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { GraphModeContext } from './GraphModeContext';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
 
 import { ReportsBlock } from '../../components/ReportsBlock';
 import { ListOfCountries } from '../../components/ListOfCountries';
@@ -13,15 +14,18 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      padding: 32,
+      paddingLeft: 16,
+      paddingRight: 16,
       height: '100%'
     },
     mainSection: {
       flex: 1,
-      paddingRight: 32,
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column'
+      [theme.breakpoints.up('lg')]: {
+        display: 'flex',
+        paddingRight: 32,
+        flexDirection: 'column',
+        height: '100%',
+      }
     },
     rightSection: {
       flex: '0 0 auto',
@@ -30,9 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column'
     },
     totalWrapper: {
-      flex: '0 0 100px',
       width: '100%',
-      marginBottom: 20
+      flex: 1,
+      marginBottom: 20,
+      [theme.breakpoints.up('lg')]: {
+        flex: '0 0 100px',
+        width: '100%',
+      }
     },
     countriesWrapper: {
       flex: '0 0 264px',
@@ -40,7 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 20
     },
     graphsWrapper: {
-      flex: 1
+      flex: 1,
+      width: '100%',
+      height: 300
     },
     scroll: {
       overflowY: 'scroll',
@@ -122,22 +132,24 @@ const GraphPage: React.FC = () => {
             <ReportsBlock selectedCountries={selectedCountries} />
           </div>
         </div>
-        <div className={classes.rightSection}>
-          <div className={`${classes.countriesWrapper}  ${classes.scroll}`}>
-            <SelectedCountries
-              countries={countries}
-              selectedCountries={selectedCountries}
-              updateCountry={updateCountry}
-            />
+        <Hidden xsDown>
+          <div className={classes.rightSection}>
+            <div className={`${classes.countriesWrapper}  ${classes.scroll}`}>
+              <SelectedCountries
+                countries={countries}
+                selectedCountries={selectedCountries}
+                updateCountry={updateCountry}
+              />
+            </div>
+            <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
+              <ListOfCountries
+                countries={countries}
+                selectedCountries={selectedCountries}
+                updateCountry={updateCountry}
+              />
+            </div>
           </div>
-          <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-            <ListOfCountries
-              countries={countries}
-              selectedCountries={selectedCountries}
-              updateCountry={updateCountry}
-            />
-          </div>
-        </div>
+        </Hidden>
       </div>
     </GraphModeContext.Provider>
   );
