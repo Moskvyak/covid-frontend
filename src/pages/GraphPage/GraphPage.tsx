@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       paddingLeft: 16,
       paddingRight: 16,
+      paddingBottom: 32,
       height: '100%'
     },
     mainSection: {

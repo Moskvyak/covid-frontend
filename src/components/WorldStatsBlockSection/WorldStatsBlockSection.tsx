@@ -9,12 +9,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      borderRight: '1px solid #eee',
       cursor: 'pointer',
       '&:hover': {
         color: `${props.color}`,
         fontWeight: 500
-      }
+      },
+      [theme.breakpoints.up('lg')]: {
+        borderRight: '1px solid #eee',
+      },
     }),
     noBorder: () => ({
       borderRight: 0

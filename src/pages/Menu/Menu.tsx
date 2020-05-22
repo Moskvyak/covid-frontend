@@ -16,11 +16,18 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
-      width: drawerWidth,
-      flexShrink: 0
+      width: 240,
+      [theme.breakpoints.up('lg')]: {
+        marginTop: 64,
+        height: 'calc(100% - 64px)'
+      }
     },
-    drawerPaper: {
-      width: drawerWidth
+    root: {
+      backgroundColor: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      padding: theme.spacing(2)
     },
     menuItem: {
       fontSize: 20,
@@ -42,26 +49,26 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
+interface Props {
+  open: boolean;
+  variant: 'permanent' | 'persistent' | 'temporary',
+  onClose(): void;
+}
+const Menu: React.FC<Props> = (props: Props) => {
+  const { open, variant, onClose } = props;
 
-const Menu: React.FC = () => {
   const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = useState(false);
-  const matches = useMediaQuery(theme.breakpoints.up('lg'));
-  const drawerVariant = !matches ? 'temporary' : 'permanent';
 
   return (
     <React.Fragment>
       <Drawer
-        className={classes.drawer}
-        variant={drawerVariant}
-        classes={{
-          paper: classes.drawerPaper
-        }}
-        open={open}
-        onClose={() => setOpen(false)}
         anchor="left"
+        classes={{ paper: classes.drawer }}
+        onClose={onClose}
+        open={open}
+        variant={variant}
       >
+        <div className={classes.root}>
         <div>
           <Typography
             variant="h4"
@@ -91,17 +98,8 @@ const Menu: React.FC = () => {
         >
           About
         </ListItem>
+        </div>
       </Drawer>
-      {!matches &&
-        !open &&
-        <IconButton
-          aria-label="menu"
-          size="medium"
-          className={classes.menuButton}
-          onClick={() => setOpen(true)}
-        >
-          <MenuIcon fontSize="inherit" />
-        </IconButton>}
     </React.Fragment>
   );
 };
