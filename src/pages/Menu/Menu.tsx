@@ -1,9 +1,4 @@
-import React, { useState } from 'react';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
-
+import React from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
@@ -12,7 +7,6 @@ import ListItem from '@material-ui/core/ListItem';
 import { Typography } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
