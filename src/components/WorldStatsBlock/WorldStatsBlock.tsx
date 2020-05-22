@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       animationDuration: '1s',
       animationTimingFunction: 'linear',
-      [theme.breakpoints.up('lg')]: {
+      [theme.breakpoints.up('sm')]: {
         flexDirection: 'row'
       }
     }

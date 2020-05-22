@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     mainSection: {
       flex: 1,
+      paddingRight: 16,
       [theme.breakpoints.up('lg')]: {
         paddingRight: 32
       }
@@ -72,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [graphMode, setGraphMode] = useState('confirmed');
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
