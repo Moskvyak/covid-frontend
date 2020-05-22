@@ -31,7 +31,7 @@ const Topbar: React.FC<Props> = (props: Props) => {
     <AppBar className={classes.root}>
       <Toolbar>
         <RouterLink to="/">
-          <img width={50} height={50} alt="Logo" src={logo} />
+          <img width={40} height={40} alt="Logo" src={logo} />
         </RouterLink>
         <div className={classes.flexGrow} />
         <Hidden lgUp>
