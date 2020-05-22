@@ -22,16 +22,18 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      width: 320,
+      marginRight: 24,
+      width: 488,
       alignItems: 'center'
     },
     name: {
-      flex: 1,
+      flex: '0 0 33%',
       fontSize,
+      textAlign: 'left',
       lineHeight: '12px'
     },
     stats: {
-      flex: '0 0 248px',
+      flex: '0 0 66%',
       display: 'flex',
       marginLeft: 8
     },

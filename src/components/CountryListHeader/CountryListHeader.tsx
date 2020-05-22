@@ -17,16 +17,16 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       height: 30,
       marginLeft: 36,
-      width: 320,
+      marginRight: 24,
       alignItems: 'center'
     },
     name: {
-      flex: 1,
+      flex: '0 0 33%',
       fontSize,
       textAlign: 'left'
     },
     stats: {
-      flex: '0 0 248px',
+      flex: '0 0 66%',
       display: 'flex',
       marginLeft: 8
     },

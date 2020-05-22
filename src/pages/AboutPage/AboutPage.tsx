@@ -47,10 +47,6 @@ const AboutPage: React.FC = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Typography variant="h3" component="h1" className={classes.header}>
-        About
-      </Typography>
-
       <Typography variant="body2" component="p" className={classes.section}>
         Data Source
       </Typography>

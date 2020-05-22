@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { GraphModeContext } from './GraphModeContext';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
+import Dialog from '@material-ui/core/Dialog';
 
 import { ReportsBlock } from '../../components/ReportsBlock';
 import { ListOfCountries } from '../../components/ListOfCountries';
@@ -13,45 +14,38 @@ import { GET_COUNTRIES } from '../../graphql/queries';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      paddingLeft: 16,
-      paddingRight: 16,
-      paddingBottom: 32,
+      padding: 16,
       height: '100%'
+    },
+    rowFlex: {
+      display: 'flex'
     },
     mainSection: {
       flex: 1,
       [theme.breakpoints.up('lg')]: {
-        display: 'flex',
-        paddingRight: 32,
-        flexDirection: 'column',
-        height: '100%',
+        paddingRight: 32
       }
     },
     rightSection: {
-      flex: '0 0 auto',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column'
+      flex: '0 0 auto'
     },
     totalWrapper: {
       width: '100%',
       flex: 1,
       marginBottom: 20,
       [theme.breakpoints.up('lg')]: {
-        flex: '0 0 100px',
-        width: '100%',
+        height: 130,
+        width: '100%'
       }
     },
-    countriesWrapper: {
-      flex: '0 0 264px',
-      width: '100%',
-      marginBottom: 20
+    listOfCountriesWrapper: {
+      height: 400,
+      width: '100%'
     },
     graphsWrapper: {
       flex: 1,
       width: '100%',
-      height: 300
+      height: 400
     },
     scroll: {
       overflowY: 'scroll',
@@ -78,6 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
+  const [open, setOpen] = useState(true);
   const [graphMode, setGraphMode] = useState('confirmed');
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
@@ -121,36 +116,55 @@ const GraphPage: React.FC = () => {
       return country;
     });
   }
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  }
 
   return (
     <GraphModeContext.Provider value={{ mode: graphMode, updateMode }}>
       <div className={classes.root}>
-        <div className={classes.mainSection}>
-          <div className={classes.totalWrapper}>
-            <WorldStatsBlock />
-          </div>
-          <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-            <ReportsBlock selectedCountries={selectedCountries} />
-          </div>
+        <div className={classes.totalWrapper}>
+          <WorldStatsBlock />
         </div>
-        <Hidden xsDown>
-          <div className={classes.rightSection}>
-            <div className={`${classes.countriesWrapper}  ${classes.scroll}`}>
-              <SelectedCountries
-                countries={countries}
-                selectedCountries={selectedCountries}
-                updateCountry={updateCountry}
-              />
-            </div>
+        <div className={classes.rowFlex}>
+          <div className={classes.mainSection}>
             <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-              <ListOfCountries
-                countries={countries}
-                selectedCountries={selectedCountries}
-                updateCountry={updateCountry}
-              />
+              <ReportsBlock selectedCountries={selectedCountries} />
             </div>
           </div>
-        </Hidden>
+          <Hidden xsDown>
+            <div className={classes.rightSection}>
+              <div className={`${classes.graphsWrapper}  ${classes.scroll}`}>
+                <SelectedCountries
+                  handleViewAllCountries={handleOpen}
+                  countries={countries}
+                  selectedCountries={selectedCountries}
+                  updateCountry={updateCountry}
+                />
+              </div>
+            </div>
+          </Hidden>
+        </div>
+        <Dialog
+          fullWidth={true}
+          maxWidth={'sm'}
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="max-width-dialog-title"
+        >
+          <div
+            className={`${classes.listOfCountriesWrapper} ${classes.scroll}`}
+          >
+            <ListOfCountries
+              countries={countries}
+              selectedCountries={selectedCountries}
+              updateCountry={updateCountry}
+            />
+          </div>
+        </Dialog>
       </div>
     </GraphModeContext.Provider>
   );

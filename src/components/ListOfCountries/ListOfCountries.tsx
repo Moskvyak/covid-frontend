@@ -12,7 +12,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { CountryListItem } from '../CountryListItem';
 import { CountryListHeader } from '../CountryListHeader';
 
-const drawerWidth = 380;
+const drawerWidth = '100%';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

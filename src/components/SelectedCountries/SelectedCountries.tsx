@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
@@ -35,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       height: '100%',
       padding: 24,
+      paddingBottom: 0,
       display: 'flex',
       flexDirection: 'column'
     },
@@ -64,6 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawer: {
       width: drawerWidth,
+      paddingBottom: 8,
       flex: 1
     },
     name: {
@@ -129,6 +133,13 @@ const useStyles = makeStyles((theme: Theme) =>
     deaths: {
       color: DEATH_COLOR,
       fontSize
+    },
+    actions: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      paddingTop: 8,
+      paddingBottom: 8
     }
   })
 );
@@ -137,6 +148,7 @@ interface Props {
   countries: any[];
   selectedCountries: any[];
   updateCountry: (country: any) => void;
+  handleViewAllCountries: () => void;
 }
 
 function sortByConfirmed(
@@ -160,7 +172,12 @@ const applySort = (keyToCompare: string, sort: 'asc' | 'desc') => {
 };
 const SelectedCountries: React.FC<Props> = (props: Props) => {
   const classes = useStyles();
-  const { selectedCountries, updateCountry, countries } = props;
+  const {
+    selectedCountries,
+    updateCountry,
+    countries,
+    handleViewAllCountries
+  } = props;
   const { mode } = useContext(GraphModeContext);
   let keyToCompare = 'confirmedTotal';
   let columnTitle = 'Confirmed';
@@ -265,10 +282,21 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
               <p>Loading locations...</p>
               <LinearProgress />
             </div>}
-          {countries.length >0 && !filteredCountries.length &&
+          {countries.length > 0 &&
+            !filteredCountries.length &&
             <div className={classes.loading}>
               <h3>Select the countries from the list below to compare</h3>
             </div>}
+        </div>
+        <Divider />
+        <div className={classes.actions}>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={handleViewAllCountries}
+          >
+            View all countries
+          </Button>
         </div>
       </Paper>
     </div>
