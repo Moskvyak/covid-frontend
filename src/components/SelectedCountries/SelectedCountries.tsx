@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%'
     },
     root: {
-      height: 'calc(100% - 2px)'
+      height: '100%'
     },
     title: {
       marginTop: 0,

@@ -4,6 +4,13 @@ import { GraphModeContext } from './GraphModeContext';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
+
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import { ReportsBlock } from '../../components/ReportsBlock';
 import { ListOfCountries } from '../../components/ListOfCountries';
@@ -22,7 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     mainSection: {
       flex: 1,
-      paddingRight: 16,
+      [theme.breakpoints.up('sm')]: {
+        paddingRight: 16,
+      },
       [theme.breakpoints.up('lg')]: {
         paddingRight: 32
       }
@@ -73,8 +82,14 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
-  const [open, setOpen] = useState(false);
+  const [openAllCountriesDialog, setOpenAllCoutriesDialog] = useState(false);
+  const [openFiltersDialog, setOpenFiltersDialog] = useState(false);
   const [graphMode, setGraphMode] = useState('confirmed');
+  const [value, setValue] = useState('one');
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+    setValue(newValue);
+  };
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
@@ -117,12 +132,19 @@ const GraphPage: React.FC = () => {
       return country;
     });
   }
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseAllCountriesDialog = () => {
+    setOpenAllCoutriesDialog(false);
   };
-  const handleOpen = () => {
-    setOpen(true);
-  }
+  const handleOpenAllCountriesDialog = () => {
+    setOpenAllCoutriesDialog(true);
+  };
+
+  const handleCloseFiltersDialog = () => {
+    setOpenFiltersDialog(false);
+  };
+  const handleOpenFiltersDialog = () => {
+    setOpenFiltersDialog(true);
+  };
 
   return (
     <GraphModeContext.Provider value={{ mode: graphMode, updateMode }}>
@@ -132,15 +154,15 @@ const GraphPage: React.FC = () => {
         </div>
         <div className={classes.rowFlex}>
           <div className={classes.mainSection}>
-            <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-              <ReportsBlock selectedCountries={selectedCountries} />
+            <div className={`${classes.graphsWrapper}`}>
+              <ReportsBlock selectedCountries={selectedCountries} openFilters={handleOpenFiltersDialog} />
             </div>
           </div>
-          <Hidden xsDown>
+          <Hidden smDown>
             <div className={classes.rightSection}>
-              <div className={`${classes.graphsWrapper}  ${classes.scroll}`}>
+              <div className={`${classes.graphsWrapper}`}>
                 <SelectedCountries
-                  handleViewAllCountries={handleOpen}
+                  handleViewAllCountries={handleOpenAllCountriesDialog}
                   countries={countries}
                   selectedCountries={selectedCountries}
                   updateCountry={updateCountry}
@@ -149,23 +171,73 @@ const GraphPage: React.FC = () => {
             </div>
           </Hidden>
         </div>
-        <Dialog
-          fullWidth={true}
-          maxWidth={'sm'}
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="max-width-dialog-title"
-        >
-          <div
-            className={`${classes.listOfCountriesWrapper} ${classes.scroll}`}
+        <Hidden smDown>
+          <Dialog
+            fullWidth={true}
+            maxWidth={'sm'}
+            open={openAllCountriesDialog}
+            onClose={handleCloseAllCountriesDialog}
+            aria-labelledby="max-width-dialog-title"
           >
-            <ListOfCountries
-              countries={countries}
-              selectedCountries={selectedCountries}
-              updateCountry={updateCountry}
-            />
-          </div>
-        </Dialog>
+            <div
+              className={`${classes.listOfCountriesWrapper} ${classes.scroll}`}
+            >
+              <ListOfCountries
+                countries={countries}
+                selectedCountries={selectedCountries}
+                updateCountry={updateCountry}
+              />
+            </div>
+          </Dialog>
+        </Hidden>
+        <Hidden mdUp>
+          <Dialog
+            fullScreen
+            open={openFiltersDialog}
+            onClose={handleCloseFiltersDialog}
+            aria-labelledby="max-width-dialog-title"
+          >
+            <DialogTitle style={{ padding: 0 }} id="confirmation-dialog-title">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="filter tabs"
+                centered
+              >
+                <Tab value="one" label="Selected countries" wrapped />
+                <Tab value="two" label="All countries" />
+              </Tabs>
+            </DialogTitle>
+            <DialogContent dividers>
+              <div
+                className={`${classes.listOfCountriesWrapper} ${classes.scroll}`}
+              >
+                {value === 'one' &&
+                  <SelectedCountries
+                    handleViewAllCountries={handleOpenAllCountriesDialog}
+                    countries={countries}
+                    selectedCountries={selectedCountries}
+                    updateCountry={updateCountry}
+                  />}
+                {value === 'two' &&
+                  <ListOfCountries
+                    countries={countries}
+                    selectedCountries={selectedCountries}
+                    updateCountry={updateCountry}
+                  />}
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                onClick={handleCloseFiltersDialog}
+                color="primary"
+              >
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Hidden>
       </div>
     </GraphModeContext.Provider>
   );

@@ -11,12 +11,9 @@ import {
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
 import { useMediaQuery, useTheme } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import { LocalizationProvider } from '@material-ui/pickers';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
-import AppBar from '@material-ui/core/AppBar';
 
 import { GraphPage } from './pages/GraphPage';
 import { AboutPage } from './pages/AboutPage';
