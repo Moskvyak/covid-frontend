@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
         color: `${props.color}`,
         fontWeight: 500
       },
-      [theme.breakpoints.up('lg')]: {
+      [theme.breakpoints.up('sm')]: {
         borderRight: '1px solid #eee',
       },
     }),
@@ -28,13 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       color: props.color,
       [theme.breakpoints.up('lg')]: {
-        fontSize: 20,
-        marginTop: 0,
-        marginBottom: 20,
+        fontSize: 20
       }
     }),
     sectionBody: {
       fontSize: 18,
+      marginBottom: 16,
       textAlign: 'center'
     },
     scroll: {
