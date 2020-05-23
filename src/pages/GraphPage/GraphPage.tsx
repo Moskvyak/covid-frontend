@@ -21,19 +21,23 @@ import { GET_COUNTRIES } from '../../graphql/queries';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: 16,
-      height: '100%'
+      height: '100%',
+      padding: 8,
+      [theme.breakpoints.up('sm')]: {
+        padding: 16,
+      },
     },
     rowFlex: {
-      display: 'flex'
+      display: 'flex',
+      marginBottom: 16
     },
     mainSection: {
       flex: 1,
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up('md')]: {
         paddingRight: 16,
       },
       [theme.breakpoints.up('lg')]: {
-        paddingRight: 32
+        paddingRight: 16
       }
     },
     rightSection: {
@@ -42,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     totalWrapper: {
       width: '100%',
       flex: 1,
-      marginBottom: 20,
+      marginBottom: 16,
       [theme.breakpoints.up('lg')]: {
         height: 130,
         width: '100%'

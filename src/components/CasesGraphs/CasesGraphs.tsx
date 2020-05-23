@@ -2,8 +2,7 @@ import React, { useContext } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+
 import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 import { DateRangePicker, DateRange } from '@material-ui/pickers';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -43,10 +42,14 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       fontWeight: 600,
       paddingBottom: 0,
+      paddingLeft: 16,
       display: 'flex',
       flexWrap: 'wrap',
       alignItems: 'center',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between', 
+      [theme.breakpoints.up('sm')]: {
+        padding: 0
+      }
     },
     graphWrapper: {
       height: 260,
@@ -55,8 +58,13 @@ const useStyles = makeStyles((theme: Theme) =>
     datePickerWrapper: {
       flex: 1,
       display: 'flex',
-      justifyContent: 'center',
-      marginBottom: 16
+      justifyContent: 'flex-start',
+      paddingLeft: 8,
+      marginBottom: 16,
+      [theme.breakpoints.up('sm')]: {
+        justifyContent: 'center',
+        padding: 0
+      },
     },
     datePicker: {
       flexDirection: 'row',
@@ -169,6 +177,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
           endText="End date"
           inputFormat={'DD/MM/YYYY'}
           margin="dense"
+          color="primary"
           value={selectedRange}
           minDate={moment('2020-01-22')}
           maxDate={moment()}

@@ -16,8 +16,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       height: '100%',
-      padding: 24,
-      paddingBottom: 0
+      padding: 8,
+      [theme.breakpoints.up('sm')]: {
+        padding: 24,
+        paddingBottom: 0
+      }
     },
     '@keyframes appear': {
       from: { opacity: 0 },

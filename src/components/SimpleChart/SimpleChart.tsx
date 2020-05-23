@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import Paper from '@material-ui/core/Paper';
 import { applyThousandSeparator } from '../../utils/formatter';
+import { useMediaQuery } from '@material-ui/core';
 import { ResponsiveContainer } from '../ResponsiveContainer/ResponsiveContainer';
 interface Props {
   data: object[];
@@ -34,23 +35,26 @@ class CustomizedXAxisTick extends React.PureComponent<any, any> {
   }
 }
 
-class CustomizedYAxisTick extends React.PureComponent<any, any> {
-  render() {
-    const { x, y, payload } = this.props;
-    return (
-      <text
-        x={x}
-        y={y - 12}
-        dy={16}
-        textAnchor="end"
-        fill="#666"
-        fontSize="12px"
-      >
-        {applyThousandSeparator(payload.value.toString(), ',', 'thousand')}
-      </text>
-    );
-  }
-}
+const CustomizedYAxisTick: React.FC<any> = (props: any) => {
+  const { x, y, payload } = props;
+  const matches = useMediaQuery('(min-width:600px)');
+  const responsiveFontSize = matches ? '12px' : '10px';
+  const responsiveY = matches ? y - 12 : y + 2;
+  const responsiveDy = matches ? 16 : 0;
+  const textProps = {
+    x,
+    y: responsiveY,
+    dy: responsiveDy,
+    textAnchor: 'end',
+    fill: '#666',
+    fontSize: responsiveFontSize
+  };
+  return (
+    <text {...textProps}>
+      {applyThousandSeparator(payload.value.toString(), ',', 'thousand')}
+    </text>
+  );
+};
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active) {
