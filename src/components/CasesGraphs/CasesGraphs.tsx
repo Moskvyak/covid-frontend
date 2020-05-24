@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
+import Hidden from '@material-ui/core/Hidden';
 
 import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 import { DateRangePicker, DateRange } from '@material-ui/pickers';
@@ -46,9 +47,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexWrap: 'wrap',
       alignItems: 'center',
-      justifyContent: 'space-between', 
+      justifyContent: 'space-between',
       [theme.breakpoints.up('sm')]: {
-        padding: 0
+        padding: 0,
+        marginBottom: 8
       }
     },
     graphWrapper: {
@@ -63,15 +65,18 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 16,
       [theme.breakpoints.up('sm')]: {
         justifyContent: 'center',
-        padding: 0
-      },
+        padding: 0,
+        marginBottom: 0
+      }
     },
     datePicker: {
       flexDirection: 'row',
       '& .MuiFormControl-root': {
-        width: 100,
         marginRight: 8,
-        marginLeft: 8
+        marginLeft: 8,
+        [theme.breakpoints.down('xs')]: {
+          width: 100
+        }
       }
     },
     name: {
@@ -159,20 +164,11 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     activeData.push(newActiveItem);
   });
 
-  // const renderInput = (startProps: any, endProps: any) => {
-  //   return (
-  //     <React.Fragment>
-  //       {' '}<TextField {...startProps} /> <Typography> to </Typography>{' '}
-  //       <TextField {...endProps} />
-  //     </React.Fragment>
-  //   );
-  // };
-
   const renderDatePicker = () => {
     return (
       <div className={`${classes.datePickerWrapper}`}>
         <DateRangePicker
-        className={classes.datePicker}
+          className={classes.datePicker}
           startText="Start date"
           endText="End date"
           inputFormat={'DD/MM/YYYY'}
@@ -195,13 +191,22 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
         {mode === 'recovered' &&
           <div className={classes.recovered}>Recovered</div>}
         {mode === 'deaths' && <div className={classes.deaths}>Deaths</div>}
-        <IconButton color="inherit" onClick={openFilters}>
-          <TuneIcon />
-        </IconButton>
+        <Hidden xsDown>
+          <div>
+            {renderDatePicker()}
+          </div>
+        </Hidden>
+        <Hidden mdUp>
+          <IconButton color="inherit" onClick={openFilters}>
+            <TuneIcon />
+          </IconButton>
+        </Hidden>
       </div>
-      <div>
-        {renderDatePicker()}
-      </div>
+      <Hidden smUp>
+        <div>
+          {renderDatePicker()}
+        </div>
+      </Hidden>
       <div className={classes.graphWrapper}>
         {selectedCountries.length > 0 &&
           mode === 'confirmed' &&
