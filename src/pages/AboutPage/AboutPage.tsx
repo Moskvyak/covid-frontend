@@ -114,6 +114,7 @@ const AboutPage: React.FC = () => {
           src="https://s3-ap-southeast-2.amazonaws.com/skillmap-assets/images/postgres.svg"
         />
       </div>
+      <div>Logo made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
     </div>
   );
 };
