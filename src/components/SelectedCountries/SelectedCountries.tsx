@@ -3,7 +3,6 @@ import React, { useContext } from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
@@ -18,7 +17,6 @@ import {
   ACTIVE_COLOR
 } from '../../data';
 
-const drawerWidth = 380;
 const fontSize = 12;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,19 +25,15 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%'
     },
     root: {
-      height: '100%'
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column'
     },
     title: {
       marginTop: 0,
       marginBottom: 0,
       paddingLeft: 8
-    },
-    container: {
-      height: '100%',
-      padding: 24,
-      paddingBottom: 0,
-      display: 'flex',
-      flexDirection: 'column'
     },
     header: {
       width: '100%',
@@ -66,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     drawer: {
-      width: drawerWidth,
+      width: '100%',
       paddingBottom: 8,
       flex: 1
     },
@@ -145,6 +139,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+  withActions?: boolean;
   countries: any[];
   selectedCountries: any[];
   updateCountry: (country: any) => void;
@@ -224,71 +219,71 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={classes.root}>
-      <Paper className={`${classes.container}`} elevation={1}>
-        <div className={classes.titleHeader}>
-          <h1 className={classes.title}>
-            Selected countries: {' '}
-            {filteredCountries.length > 0 && filteredCountries.length}
-          </h1>
-        </div>
+      <div className={classes.titleHeader}>
+        <h1 className={classes.title}>
+          Selected countries: {' '}
+          {filteredCountries.length > 0 && filteredCountries.length}
+        </h1>
+      </div>
+      {filteredCountries.length > 0 &&
+        <div className={classes.header}>
+          <div className={classes.control} />
+          <div className={classes.name}>Country</div>
+          <div className={`${classes.item} ${columnClass}`}>
+            {columnTitle}
+          </div>
+        </div>}
+      <div className={`${classes.drawer} ${classes.scroll}`}>
         {filteredCountries.length > 0 &&
-          <div className={classes.header}>
-            <div className={classes.control} />
-            <div className={classes.name}>Country</div>
-            <div className={`${classes.item} ${columnClass}`}>
-              {columnTitle}
-            </div>
-          </div>}
-        <div className={`${classes.drawer} ${classes.scroll}`}>
-          {filteredCountries.length > 0 &&
-            <div className={classes.fadeIn}>
-              {filteredCountries.map((country: any, index: number) => {
-                const isEven = index % 2 === 1;
-                const rootClassName = isEven
-                  ? `${classes.listItem} ${classes.isEven}`
-                  : classes.listItem;
-                return (
-                  <div key={country.id} className={rootClassName}>
-                    <div
-                      onClick={country.onClick}
-                      className={classes.control}
-                      style={{
-                        backgroundColor: country.color,
-                        width: 12,
-                        height: 12,
-                        marginRight: 8,
-                        marginLeft: 8,
-                        borderColor: country.color,
-                        cursor: 'pointer',
-                        borderRadius: '50%'
-                      }}
-                    />
-                    <div className={classes.name}>
-                      {country.name}
-                    </div>
-                    <div className={`${classes.item}  ${columnClass}`}>
-                      {applyThousandSeparator(
-                        country[keyToCompare].toString(),
-                        ',',
-                        'thousand'
-                      )}
-                    </div>
+          <div className={classes.fadeIn}>
+            {filteredCountries.map((country: any, index: number) => {
+              const isEven = index % 2 === 1;
+              const rootClassName = isEven
+                ? `${classes.listItem} ${classes.isEven}`
+                : classes.listItem;
+              return (
+                <div key={country.id} className={rootClassName}>
+                  <div
+                    onClick={country.onClick}
+                    className={classes.control}
+                    style={{
+                      backgroundColor: country.color,
+                      width: 12,
+                      height: 12,
+                      marginRight: 8,
+                      marginLeft: 8,
+                      borderColor: country.color,
+                      cursor: 'pointer',
+                      borderRadius: '50%'
+                    }}
+                  />
+                  <div className={classes.name}>
+                    {country.name}
                   </div>
-                );
-              })}
-            </div>}
-          {!countries.length &&
-            <div className={classes.loading}>
-              <p>Loading locations...</p>
-              <LinearProgress />
-            </div>}
-          {countries.length > 0 &&
-            !filteredCountries.length &&
-            <div className={classes.loading}>
-              <h3>Select the countries from the list below to compare</h3>
-            </div>}
-        </div>
-        <Divider />
+                  <div className={`${classes.item}  ${columnClass}`}>
+                    {applyThousandSeparator(
+                      country[keyToCompare].toString(),
+                      ',',
+                      'thousand'
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>}
+        {!countries.length &&
+          <div className={classes.loading}>
+            <p>Loading locations...</p>
+            <LinearProgress />
+          </div>}
+        {countries.length > 0 &&
+          !filteredCountries.length &&
+          <div className={classes.loading}>
+            <h3>Select the countries from the list below to compare</h3>
+          </div>}
+      </div>
+      {props.withActions && <Divider />}
+      {props.withActions &&
         <div className={classes.actions}>
           <Button
             color="primary"
@@ -297,8 +292,7 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
           >
             View all countries
           </Button>
-        </div>
-      </Paper>
+        </div>}
     </div>
   );
 };

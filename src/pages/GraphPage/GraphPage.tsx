@@ -5,7 +5,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
-
+import Paper from '@material-ui/core/Paper';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       padding: 8,
       [theme.breakpoints.up('sm')]: {
-        padding: 16,
-      },
+        padding: 16
+      }
     },
     rowFlex: {
       display: 'flex',
@@ -34,14 +34,14 @@ const useStyles = makeStyles((theme: Theme) =>
     mainSection: {
       flex: 1,
       [theme.breakpoints.up('md')]: {
-        paddingRight: 16,
+        paddingRight: 16
       },
       [theme.breakpoints.up('lg')]: {
         paddingRight: 16
       }
     },
     rightSection: {
-      flex: '0 0 auto'
+      flex: '0 0 380px'
     },
     totalWrapper: {
       width: '100%',
@@ -60,6 +60,10 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1,
       width: '100%',
       height: 400
+    },
+    padding: {
+      padding: 24, 
+      paddingBottom: 0
     },
     scroll: {
       overflowY: 'scroll',
@@ -159,19 +163,23 @@ const GraphPage: React.FC = () => {
         <div className={classes.rowFlex}>
           <div className={classes.mainSection}>
             <div className={`${classes.graphsWrapper}`}>
-              <ReportsBlock selectedCountries={selectedCountries} openFilters={handleOpenFiltersDialog} />
+              <ReportsBlock
+                selectedCountries={selectedCountries}
+                openFilters={handleOpenFiltersDialog}
+              />
             </div>
           </div>
           <Hidden smDown>
             <div className={classes.rightSection}>
-              <div className={`${classes.graphsWrapper}`}>
+              <Paper className={`${classes.graphsWrapper} ${classes.padding}`}>
                 <SelectedCountries
+                  withActions
                   handleViewAllCountries={handleOpenAllCountriesDialog}
                   countries={countries}
                   selectedCountries={selectedCountries}
                   updateCountry={updateCountry}
                 />
-              </div>
+              </Paper>
             </div>
           </Hidden>
         </div>
@@ -213,11 +221,9 @@ const GraphPage: React.FC = () => {
               </Tabs>
             </DialogTitle>
             <DialogContent dividers>
-              <div
-                className={`${classes.listOfCountriesWrapper} ${classes.scroll}`}
-              >
                 {value === 'one' &&
                   <SelectedCountries
+                    withActions={false}
                     handleViewAllCountries={handleOpenAllCountriesDialog}
                     countries={countries}
                     selectedCountries={selectedCountries}
@@ -229,7 +235,6 @@ const GraphPage: React.FC = () => {
                     selectedCountries={selectedCountries}
                     updateCountry={updateCountry}
                   />}
-              </div>
             </DialogContent>
             <DialogActions>
               <Button
