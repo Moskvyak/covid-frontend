@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 
 import {
   RECOVERED_COLOR,
@@ -20,14 +21,26 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: 24,
       alignItems: 'center'
     },
-    name: {
+    oneThird: {
       flex: '0 0 33%',
-      fontSize,
-      textAlign: 'left'
+      fontSize
     },
-    stats: {
+    half: {
+      flex: '0 0 50%',
+      fontSize
+    },
+    twoThirds: {
       flex: '0 0 66%',
       display: 'flex',
+      fontSize
+    },
+    alignLeft: {
+      textAlign: 'left'
+    },
+    alignRight: {
+      textAlign: 'right'
+    },
+    marginLeft: {
       marginLeft: 8
     },
     item: {
@@ -38,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'right'
     },
     confirmed: {
-      color: CONFIRMED_COLOR,
+      color: CONFIRMED_COLOR
     },
     active: {
       color: ACTIVE_COLOR
@@ -51,18 +64,66 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-
-const CountryListHeader: React.FC = () => {
+interface Props {
+  filteredView?: boolean;
+}
+const CountryListHeader: React.FC<Props> = (props: Props) => {
+  const { filteredView } = props;
   const classes = useStyles();
+  const { mode } = useContext(GraphModeContext);
+  let keyToCompare = 'confirmedTotal';
+  let columnTitle = 'Confirmed';
+  let columnClass = classes.confirmed;
+
+  switch (mode) {
+    case 'confirmed': {
+      keyToCompare = 'confirmedTotal';
+      columnTitle = 'Confirmed';
+      columnClass = classes.confirmed;
+      break;
+    }
+    case 'active': {
+      keyToCompare = 'activeTotal';
+      columnTitle = 'Active';
+      columnClass = classes.active;
+      break;
+    }
+    case 'recovered': {
+      keyToCompare = 'recoveredTotal';
+      columnTitle = 'Recovered';
+      columnClass = classes.recovered;
+      break;
+    }
+    case 'deaths': {
+      keyToCompare = 'deathsTotal';
+      columnTitle = 'Deaths';
+      columnClass = classes.deaths;
+      break;
+    }
+  }
   return (
     <div className={classes.root}>
-      <div className={classes.name}>Country</div>
-      <div className={classes.stats}>
-      <span className={`${classes.confirmed} ${classes.item}`}>Confirmed</span>
-      <span className={`${classes.active} ${classes.item}`}>Active</span>
-      <span className={`${classes.recovered} ${classes.item}`}>Recovered</span>
-      <span className={`${classes.deaths} ${classes.item}`}>Deaths</span>
-      </div>
+      {!filteredView &&
+        <React.Fragment>
+          <div className={`${classes.oneThird} ${classes.alignLeft}`}>Country</div>
+          <div className={classes.twoThirds}>
+            <span className={`${classes.confirmed} ${classes.item}`}>
+              Confirmed
+            </span>
+            <span className={`${classes.active} ${classes.item}`}>Active</span>
+            <span className={`${classes.recovered} ${classes.item}`}>
+              Recovered
+            </span>
+            <span className={`${classes.deaths} ${classes.item}`}>Deaths</span>
+          </div>
+        </React.Fragment>}
+      {filteredView &&
+        <React.Fragment>
+          <div className={`${classes.half} ${classes.alignLeft}`}>Country</div>
+          <div className={`${classes.half} ${columnClass} ${classes.alignRight}`}>
+            {columnTitle}
+          </div>
+        </React.Fragment>}
     </div>
   );
 };

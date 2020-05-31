@@ -6,9 +6,9 @@ import Button from '@material-ui/core/Button';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
-
+import { CountryListItem } from '../CountryListItem';
+import { CountryListHeader } from '../CountryListHeader';
 import { colors } from '../../data';
-import { applyThousandSeparator } from '../../utils/formatter';
 
 import {
   RECOVERED_COLOR,
@@ -79,12 +79,18 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 100,
       textAlign: 'right'
     },
-    listItem: {
+    listItemRow: {
       width: '100%',
-      margin: 0,
       height: '40px',
       display: 'flex',
       alignItems: 'center'
+    },
+    listItemCheckbox: {
+      flex: '0 0 36px'
+    },
+    listItem: {
+      flex: 999,
+      marginRight: 24
     },
     loading: {
       padding: 20
@@ -226,46 +232,41 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
         </h1>
       </div>
       {filteredCountries.length > 0 &&
-        <div className={classes.header}>
-          <div className={classes.control} />
-          <div className={classes.name}>Country</div>
-          <div className={`${classes.item} ${columnClass}`}>
-            {columnTitle}
-          </div>
-        </div>}
+        <CountryListHeader filteredView />}
       <div className={`${classes.drawer} ${classes.scroll}`}>
         {filteredCountries.length > 0 &&
           <div className={classes.fadeIn}>
             {filteredCountries.map((country: any, index: number) => {
               const isEven = index % 2 === 1;
               const rootClassName = isEven
-                ? `${classes.listItem} ${classes.isEven}`
-                : classes.listItem;
+                ? `${classes.listItemRow} ${classes.isEven}`
+                : classes.listItemRow;
               return (
                 <div key={country.id} className={rootClassName}>
-                  <div
-                    onClick={country.onClick}
-                    className={classes.control}
-                    style={{
-                      backgroundColor: country.color,
-                      width: 12,
-                      height: 12,
-                      marginRight: 8,
-                      marginLeft: 8,
-                      borderColor: country.color,
-                      cursor: 'pointer',
-                      borderRadius: '50%'
-                    }}
-                  />
-                  <div className={classes.name}>
-                    {country.name}
+                  <div className={classes.listItemCheckbox}>
+                    <div
+                      onClick={country.onClick}
+                      className={classes.control}
+                      style={{
+                        backgroundColor: country.color,
+                        width: 12,
+                        height: 12,
+                        marginRight: 12,
+                        marginLeft: 12,
+                        borderColor: country.color,
+                        cursor: 'pointer',
+                        borderRadius: '50%'
+                      }}
+                    />
                   </div>
-                  <div className={`${classes.item}  ${columnClass}`}>
-                    {applyThousandSeparator(
-                      country[keyToCompare].toString(),
-                      ',',
-                      'thousand'
-                    )}
+                  <div className={classes.listItem}>
+                    <CountryListItem
+                      name={country.name}
+                      filteredView
+                      confirmed={country.confirmedTotal}
+                      deaths={country.deathsTotal}
+                      recovered={country.recoveredTotal}
+                    />
                   </div>
                 </div>
               );

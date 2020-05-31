@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 
 import {
   RECOVERED_COLOR,
@@ -15,6 +16,7 @@ interface Props {
   confirmed: number;
   recovered: number;
   deaths: number;
+  filteredView?: boolean;
 }
 const fontSize = 12;
 
@@ -23,18 +25,29 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       marginRight: 24,
-      width: 488,
+      width: '100%',
       alignItems: 'center'
     },
-    name: {
+    oneThird: {
       flex: '0 0 33%',
-      fontSize,
-      textAlign: 'left',
-      lineHeight: '12px'
+      fontSize
     },
-    stats: {
+    half: {
+      flex: '0 0 50%',
+      fontSize
+    },
+    twoThirds: {
       flex: '0 0 66%',
       display: 'flex',
+      fontSize
+    },
+    alignLeft: {
+      textAlign: 'left'
+    },
+    alignRight: {
+      textAlign: 'right'
+    },
+    marginLeft: {
       marginLeft: 8
     },
     item: {
@@ -63,29 +76,78 @@ const CountryListItem: React.FC<Props> = ({
   name,
   confirmed,
   recovered,
-  deaths
+  deaths,
+  filteredView
 }: Props) => {
   const classes = useStyles();
   const active = confirmed - recovered - deaths;
+  const stats: any = {
+    confirmedTotal: confirmed,
+    recoveredTotal: recovered,
+    deathsTotal: deaths,
+    activeTotal: active
+  };
+  const { mode } = useContext(GraphModeContext);
+  let keyToCompare = 'confirmedTotal';
+  let columnClass = classes.confirmed;
+
+  switch (mode) {
+    case 'confirmed': {
+      keyToCompare = 'confirmedTotal';
+      columnClass = classes.confirmed;
+      break;
+    }
+    case 'active': {
+      keyToCompare = 'activeTotal';
+      columnClass = classes.active;
+      break;
+    }
+    case 'recovered': {
+      keyToCompare = 'recoveredTotal';
+      columnClass = classes.recovered;
+      break;
+    }
+    case 'deaths': {
+      keyToCompare = 'deathsTotal';
+      columnClass = classes.deaths;
+      break;
+    }
+  }
   return (
     <div className={classes.root}>
-      <div className={classes.name}>
-        {name}
-      </div>
-      <div className={classes.stats}>
-        <span className={`${classes.confirmed} ${classes.item}`}>
-          {applyThousandSeparator(confirmed.toString(), ',', 'thousand')}
-        </span>
-        <span className={`${classes.active} ${classes.item}`}>
-          {applyThousandSeparator(active.toString(), ',', 'thousand')}
-        </span>
-        <span className={`${classes.recovered} ${classes.item}`}>
-          {applyThousandSeparator(recovered.toString(), ',', 'thousand')}
-        </span>
-        <span className={`${classes.deaths} ${classes.item}`}>
-          {applyThousandSeparator(deaths.toString(), ',', 'thousand')}
-        </span>
-      </div>
+      {!filteredView &&
+        <React.Fragment>
+          <div className={classes.oneThird}>
+            {name}
+          </div>
+          <div className={classes.twoThirds}>
+            <span className={`${classes.confirmed} ${classes.item}`}>
+              {applyThousandSeparator(confirmed.toString(), ',', 'thousand')}
+            </span>
+            <span className={`${classes.active} ${classes.item}`}>
+              {applyThousandSeparator(active.toString(), ',', 'thousand')}
+            </span>
+            <span className={`${classes.recovered} ${classes.item}`}>
+              {applyThousandSeparator(recovered.toString(), ',', 'thousand')}
+            </span>
+            <span className={`${classes.deaths} ${classes.item}`}>
+              {applyThousandSeparator(deaths.toString(), ',', 'thousand')}
+            </span>
+          </div>
+        </React.Fragment>}
+      {filteredView &&
+        <React.Fragment>
+           <div className={classes.half}>
+            {name}
+          </div>
+          <div className={`${classes.half} ${columnClass} ${classes.alignRight}`}>
+            {applyThousandSeparator(
+              stats[keyToCompare].toString(),
+              ',',
+              'thousand'
+            )}
+          </div>
+        </React.Fragment>}
     </div>
   );
 };

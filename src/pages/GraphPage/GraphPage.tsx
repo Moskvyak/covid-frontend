@@ -62,27 +62,10 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 400
     },
     padding: {
-      padding: 24, 
-      paddingBottom: 0
+      padding: 24
     },
-    scroll: {
-      overflowY: 'scroll',
-      '&::-webkit-scrollbar': {
-        width: '2px'
-      },
-      '&::-webkit-scrollbar-track': {
-        background: '#f1f1f1'
-      },
-
-      /* Handle */
-      '&::-webkit-scrollbar-thumb': {
-        background: '#888'
-      },
-
-      /* Handle on hover */
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: '#555'
-      }
+    noBottomPadding: {
+      paddingBottom: 0
     }
   })
 );
@@ -171,7 +154,7 @@ const GraphPage: React.FC = () => {
           </div>
           <Hidden smDown>
             <div className={classes.rightSection}>
-              <Paper className={`${classes.graphsWrapper} ${classes.padding}`}>
+              <Paper className={`${classes.graphsWrapper} ${classes.padding} ${classes.noBottomPadding}`}>
                 <SelectedCountries
                   withActions
                   handleViewAllCountries={handleOpenAllCountriesDialog}
@@ -192,7 +175,7 @@ const GraphPage: React.FC = () => {
             aria-labelledby="max-width-dialog-title"
           >
             <div
-              className={`${classes.listOfCountriesWrapper} ${classes.scroll}`}
+              className={`${classes.listOfCountriesWrapper} ${classes.padding}`}
             >
               <ListOfCountries
                 countries={countries}
@@ -231,6 +214,7 @@ const GraphPage: React.FC = () => {
                   />}
                 {value === 'two' &&
                   <ListOfCountries
+                    filteredView
                     countries={countries}
                     selectedCountries={selectedCountries}
                     updateCountry={updateCountry}
