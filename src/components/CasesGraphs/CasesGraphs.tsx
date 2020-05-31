@@ -54,8 +54,12 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     graphWrapper: {
-      height: 260,
-      width: '100%'
+      height: 280,
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        height: 300,
+        marginTop: 16
+      }
     },
     datePickerWrapper: {
       flex: 1,
