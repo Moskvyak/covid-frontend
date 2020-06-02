@@ -2,6 +2,15 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { GraphModeContext } from './GraphModeContext';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
+import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import { ReportsBlock } from '../../components/ReportsBlock';
 import { ListOfCountries } from '../../components/ListOfCountries';
@@ -12,54 +21,51 @@ import { GET_COUNTRIES } from '../../graphql/queries';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      height: '100%',
+      padding: 8,
+      [theme.breakpoints.up('sm')]: {
+        padding: 16
+      }
+    },
+    rowFlex: {
       display: 'flex',
-      padding: 32,
-      height: '100%'
+      marginBottom: 16
     },
     mainSection: {
       flex: 1,
-      paddingRight: 32,
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column'
+      [theme.breakpoints.up('md')]: {
+        paddingRight: 16
+      },
+      [theme.breakpoints.up('lg')]: {
+        paddingRight: 16
+      }
     },
     rightSection: {
-      flex: '0 0 auto',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column'
+      flex: '0 0 380px'
     },
     totalWrapper: {
-      flex: '0 0 100px',
       width: '100%',
-      marginBottom: 20
+      flex: 1,
+      marginBottom: 16,
+      [theme.breakpoints.up('lg')]: {
+        height: 130,
+        width: '100%'
+      }
     },
-    countriesWrapper: {
-      flex: '0 0 264px',
-      width: '100%',
-      marginBottom: 20
+    listOfCountriesWrapper: {
+      height: 400,
+      width: '100%'
     },
     graphsWrapper: {
-      flex: 1
+      flex: 1,
+      width: '100%',
+      height: 400
     },
-    scroll: {
-      overflowY: 'scroll',
-      '&::-webkit-scrollbar': {
-        width: '2px'
-      },
-      '&::-webkit-scrollbar-track': {
-        background: '#f1f1f1'
-      },
-
-      /* Handle */
-      '&::-webkit-scrollbar-thumb': {
-        background: '#888'
-      },
-
-      /* Handle on hover */
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: '#555'
-      }
+    padding: {
+      padding: 24
+    },
+    noBottomPadding: {
+      paddingBottom: 0
     }
   })
 );
@@ -67,7 +73,14 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
+  const [openAllCountriesDialog, setOpenAllCoutriesDialog] = useState(false);
+  const [openFiltersDialog, setOpenFiltersDialog] = useState(false);
   const [graphMode, setGraphMode] = useState('confirmed');
+  const [value, setValue] = useState('one');
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+    setValue(newValue);
+  };
   const classes = useStyles();
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
@@ -110,34 +123,114 @@ const GraphPage: React.FC = () => {
       return country;
     });
   }
+  const handleCloseAllCountriesDialog = () => {
+    setOpenAllCoutriesDialog(false);
+  };
+  const handleOpenAllCountriesDialog = () => {
+    setOpenAllCoutriesDialog(true);
+  };
+
+  const handleCloseFiltersDialog = () => {
+    setOpenFiltersDialog(false);
+  };
+  const handleOpenFiltersDialog = () => {
+    setOpenFiltersDialog(true);
+  };
 
   return (
     <GraphModeContext.Provider value={{ mode: graphMode, updateMode }}>
       <div className={classes.root}>
-        <div className={classes.mainSection}>
-          <div className={classes.totalWrapper}>
-            <WorldStatsBlock />
-          </div>
-          <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-            <ReportsBlock selectedCountries={selectedCountries} />
-          </div>
+        <div className={classes.totalWrapper}>
+          <WorldStatsBlock />
         </div>
-        <div className={classes.rightSection}>
-          <div className={`${classes.countriesWrapper}  ${classes.scroll}`}>
-            <SelectedCountries
-              countries={countries}
-              selectedCountries={selectedCountries}
-              updateCountry={updateCountry}
-            />
+        <div className={classes.rowFlex}>
+          <div className={classes.mainSection}>
+            <div className={`${classes.graphsWrapper}`}>
+              <ReportsBlock
+                selectedCountries={selectedCountries}
+                openFilters={handleOpenFiltersDialog}
+              />
+            </div>
           </div>
-          <div className={`${classes.graphsWrapper} ${classes.scroll}`}>
-            <ListOfCountries
-              countries={countries}
-              selectedCountries={selectedCountries}
-              updateCountry={updateCountry}
-            />
-          </div>
+          <Hidden smDown>
+            <div className={classes.rightSection}>
+              <Paper className={`${classes.graphsWrapper} ${classes.padding} ${classes.noBottomPadding}`}>
+                <SelectedCountries
+                  withActions
+                  handleViewAllCountries={handleOpenAllCountriesDialog}
+                  countries={countries}
+                  selectedCountries={selectedCountries}
+                  updateCountry={updateCountry}
+                />
+              </Paper>
+            </div>
+          </Hidden>
         </div>
+        <Hidden smDown>
+          <Dialog
+            fullWidth={true}
+            maxWidth={'sm'}
+            open={openAllCountriesDialog}
+            onClose={handleCloseAllCountriesDialog}
+            aria-labelledby="max-width-dialog-title"
+          >
+            <div
+              className={`${classes.listOfCountriesWrapper} ${classes.padding}`}
+            >
+              <ListOfCountries
+                countries={countries}
+                selectedCountries={selectedCountries}
+                updateCountry={updateCountry}
+              />
+            </div>
+          </Dialog>
+        </Hidden>
+        <Hidden mdUp>
+          <Dialog
+            fullScreen
+            open={openFiltersDialog}
+            onClose={handleCloseFiltersDialog}
+            aria-labelledby="max-width-dialog-title"
+          >
+            <DialogTitle style={{ padding: 0 }} id="confirmation-dialog-title">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="filter tabs"
+                centered
+              >
+                <Tab value="one" label="Selected countries" wrapped />
+                <Tab value="two" label="All countries" />
+              </Tabs>
+            </DialogTitle>
+            <DialogContent dividers>
+                {value === 'one' &&
+                  <SelectedCountries
+                    withActions={false}
+                    handleViewAllCountries={handleOpenAllCountriesDialog}
+                    countries={countries}
+                    selectedCountries={selectedCountries}
+                    updateCountry={updateCountry}
+                  />}
+                {value === 'two' &&
+                  <ListOfCountries
+                    filteredView
+                    countries={countries}
+                    selectedCountries={selectedCountries}
+                    updateCountry={updateCountry}
+                  />}
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                onClick={handleCloseFiltersDialog}
+                color="primary"
+              >
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Hidden>
       </div>
     </GraphModeContext.Provider>
   );

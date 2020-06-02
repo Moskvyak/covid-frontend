@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
-
+import { CountryListItem } from '../CountryListItem';
+import { CountryListHeader } from '../CountryListHeader';
 import { colors } from '../../data';
-import { applyThousandSeparator } from '../../utils/formatter';
 
 import {
   RECOVERED_COLOR,
@@ -16,7 +17,6 @@ import {
   ACTIVE_COLOR
 } from '../../data';
 
-const drawerWidth = 380;
 const fontSize = 12;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,18 +25,15 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%'
     },
     root: {
-      height: 'calc(100% - 2px)'
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column'
     },
     title: {
       marginTop: 0,
       marginBottom: 0,
       paddingLeft: 8
-    },
-    container: {
-      height: '100%',
-      padding: 24,
-      display: 'flex',
-      flexDirection: 'column'
     },
     header: {
       width: '100%',
@@ -63,7 +60,8 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     drawer: {
-      width: drawerWidth,
+      width: '100%',
+      paddingBottom: 8,
       flex: 1
     },
     name: {
@@ -81,12 +79,18 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 100,
       textAlign: 'right'
     },
-    listItem: {
+    listItemRow: {
       width: '100%',
-      margin: 0,
       height: '40px',
       display: 'flex',
       alignItems: 'center'
+    },
+    listItemCheckbox: {
+      flex: '0 0 36px'
+    },
+    listItem: {
+      flex: 999,
+      marginRight: 24
     },
     loading: {
       padding: 20
@@ -129,14 +133,23 @@ const useStyles = makeStyles((theme: Theme) =>
     deaths: {
       color: DEATH_COLOR,
       fontSize
+    },
+    actions: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      paddingTop: 8,
+      paddingBottom: 8
     }
   })
 );
 
 interface Props {
+  withActions?: boolean;
   countries: any[];
   selectedCountries: any[];
   updateCountry: (country: any) => void;
+  handleViewAllCountries: () => void;
 }
 
 function sortByConfirmed(
@@ -160,7 +173,12 @@ const applySort = (keyToCompare: string, sort: 'asc' | 'desc') => {
 };
 const SelectedCountries: React.FC<Props> = (props: Props) => {
   const classes = useStyles();
-  const { selectedCountries, updateCountry, countries } = props;
+  const {
+    selectedCountries,
+    updateCountry,
+    countries,
+    handleViewAllCountries
+  } = props;
   const { mode } = useContext(GraphModeContext);
   let keyToCompare = 'confirmedTotal';
   let columnTitle = 'Confirmed';
@@ -207,31 +225,25 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={classes.root}>
-      <Paper className={`${classes.container}`} elevation={1}>
-        <div className={classes.titleHeader}>
-          <h1 className={classes.title}>
-            Selected countries: {' '}
-            {filteredCountries.length > 0 && filteredCountries.length}
-          </h1>
-        </div>
+      <div className={classes.titleHeader}>
+        <h1 className={classes.title}>
+          Selected countries: {' '}
+          {filteredCountries.length > 0 && filteredCountries.length}
+        </h1>
+      </div>
+      {filteredCountries.length > 0 &&
+        <CountryListHeader filteredView />}
+      <div className={`${classes.drawer} ${classes.scroll}`}>
         {filteredCountries.length > 0 &&
-          <div className={classes.header}>
-            <div className={classes.control} />
-            <div className={classes.name}>Country</div>
-            <div className={`${classes.item} ${columnClass}`}>
-              {columnTitle}
-            </div>
-          </div>}
-        <div className={`${classes.drawer} ${classes.scroll}`}>
-          {filteredCountries.length > 0 &&
-            <div className={classes.fadeIn}>
-              {filteredCountries.map((country: any, index: number) => {
-                const isEven = index % 2 === 1;
-                const rootClassName = isEven
-                  ? `${classes.listItem} ${classes.isEven}`
-                  : classes.listItem;
-                return (
-                  <div key={country.id} className={rootClassName}>
+          <div className={classes.fadeIn}>
+            {filteredCountries.map((country: any, index: number) => {
+              const isEven = index % 2 === 1;
+              const rootClassName = isEven
+                ? `${classes.listItemRow} ${classes.isEven}`
+                : classes.listItemRow;
+              return (
+                <div key={country.id} className={rootClassName}>
+                  <div className={classes.listItemCheckbox}>
                     <div
                       onClick={country.onClick}
                       className={classes.control}
@@ -239,38 +251,49 @@ const SelectedCountries: React.FC<Props> = (props: Props) => {
                         backgroundColor: country.color,
                         width: 12,
                         height: 12,
-                        marginRight: 8,
-                        marginLeft: 8,
+                        marginRight: 12,
+                        marginLeft: 12,
                         borderColor: country.color,
                         cursor: 'pointer',
                         borderRadius: '50%'
                       }}
                     />
-                    <div className={classes.name}>
-                      {country.name}
-                    </div>
-                    <div className={`${classes.item}  ${columnClass}`}>
-                      {applyThousandSeparator(
-                        country[keyToCompare].toString(),
-                        ',',
-                        'thousand'
-                      )}
-                    </div>
                   </div>
-                );
-              })}
-            </div>}
-          {!countries.length &&
-            <div className={classes.loading}>
-              <p>Loading locations...</p>
-              <LinearProgress />
-            </div>}
-          {countries.length >0 && !filteredCountries.length &&
-            <div className={classes.loading}>
-              <h3>Select the countries from the list below to compare</h3>
-            </div>}
-        </div>
-      </Paper>
+                  <div className={classes.listItem}>
+                    <CountryListItem
+                      name={country.name}
+                      filteredView
+                      confirmed={country.confirmedTotal}
+                      deaths={country.deathsTotal}
+                      recovered={country.recoveredTotal}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>}
+        {!countries.length &&
+          <div className={classes.loading}>
+            <p>Loading locations...</p>
+            <LinearProgress />
+          </div>}
+        {countries.length > 0 &&
+          !filteredCountries.length &&
+          <div className={classes.loading}>
+            <h3>Select the countries from the list below to compare</h3>
+          </div>}
+      </div>
+      {props.withActions && <Divider />}
+      {props.withActions &&
+        <div className={classes.actions}>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={handleViewAllCountries}
+          >
+            View all countries
+          </Button>
+        </div>}
     </div>
   );
 };

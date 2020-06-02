@@ -47,10 +47,6 @@ const AboutPage: React.FC = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Typography variant="h3" component="h1" className={classes.header}>
-        About
-      </Typography>
-
       <Typography variant="body2" component="p" className={classes.section}>
         Data Source
       </Typography>
@@ -118,6 +114,7 @@ const AboutPage: React.FC = () => {
           src="https://s3-ap-southeast-2.amazonaws.com/skillmap-assets/images/postgres.svg"
         />
       </div>
+      <div>Logo made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
     </div>
   );
 };

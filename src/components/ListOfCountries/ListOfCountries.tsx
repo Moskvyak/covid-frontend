@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import TextField from '@material-ui/core/TextField';
@@ -12,7 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { CountryListItem } from '../CountryListItem';
 import { CountryListHeader } from '../CountryListHeader';
 
-const drawerWidth = 380;
+const drawerWidth = '100%';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,18 +18,14 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%'
     },
     root: {
-      height: 'calc(100% - 2px)'
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
     },
     title: {
       marginTop: 0,
       marginBottom: 0,
       paddingLeft: 8
-    },
-    container: {
-      height: '100%',
-      padding: 24,
-      display: 'flex',
-      flexDirection: 'column'
     },
     header: {
       flex: '0 0 auto'
@@ -59,9 +53,17 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
       flex: 1
     },
-    listItem: {
+    listItemRow: {
       width: '100%',
-      margin: 0
+      display: 'flex',
+      alignItems: 'center'
+    },
+    listItemCheckbox: {
+      flex: '0 0 36px'
+    },
+    listItem: {
+      flex: 999,
+      marginRight: 24
     },
     loading: {
       padding: 20
@@ -93,6 +95,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+  filteredView?: boolean;
   countries: any[];
   selectedCountries: any[];
   updateCountry: (country: any) => void;
@@ -110,7 +113,6 @@ const ListOfCountries: React.FC<Props> = (props: Props) => {
   };
   return (
     <div className={classes.root}>
-      <Paper className={`${classes.container}`} elevation={1}>
         <div className={classes.titleHeader}>
           <h1 className={classes.title}>Countries</h1>
           <TextField
@@ -131,7 +133,7 @@ const ListOfCountries: React.FC<Props> = (props: Props) => {
         </div>
 
         <div className={classes.header}>
-          <CountryListHeader />
+          <CountryListHeader filteredView={props.filteredView}/>
         </div>
         <div className={`${classes.drawer} ${classes.scroll}`}>
           {countries.length > 0 &&
@@ -142,29 +144,27 @@ const ListOfCountries: React.FC<Props> = (props: Props) => {
                 );
                 const isEven = index % 2 === 1;
                 const rootClassName = isEven
-                  ? `${classes.listItem} ${classes.isEven}`
-                  : classes.listItem;
+                  ? `${classes.listItemRow} ${classes.isEven}`
+                  : classes.listItemRow;
                 return (
-                  <div key={country.id}>
-                    <FormControlLabel
-                      className={rootClassName}
-                      control={
-                        <Checkbox
+                  <div key={country.id} className={rootClassName}>
+                    <div className={classes.listItemCheckbox}>
+                     <Checkbox
                           checked={isSelected}
                           onChange={() => updateCountry(country)}
                           value={country.id}
                           color="primary"
                         />
-                      }
-                      label={
-                        <CountryListItem
+                        </div>
+                        <div className={classes.listItem}>
+                     <CountryListItem
+                          filteredView={props.filteredView}
                           name={country.name}
                           confirmed={country.confirmedTotal}
                           recovered={country.recoveredTotal}
                           deaths={country.deathsTotal}
                         />
-                      }
-                    />
+                        </div>
                   </div>
                 );
               })}
@@ -175,7 +175,6 @@ const ListOfCountries: React.FC<Props> = (props: Props) => {
               <LinearProgress />
             </div>}
         </div>
-      </Paper>
     </div>
   );
 };
