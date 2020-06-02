@@ -4,10 +4,15 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
 import Hidden from '@material-ui/core/Hidden';
 
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
 import { DateRangePicker, DateRange } from '@material-ui/pickers';
 import TuneIcon from '@material-ui/icons/Tune';
 import IconButton from '@material-ui/core/IconButton';
+import useMinimalSelectStyles from './minimalSelectClasses';
 
 import {
   RECOVERED_COLOR,
@@ -42,13 +47,14 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       position: 'relative',
       fontWeight: 600,
-      paddingBottom: 0,
+      paddingBottom: 16,
       paddingLeft: 16,
       display: 'flex',
       flexWrap: 'wrap',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'space-between',
       [theme.breakpoints.up('sm')]: {
+        alignItems: 'center',
         padding: 0,
         marginBottom: 8
       }
@@ -128,9 +134,54 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   const recoveredData: any[] = [];
   const deathsData: any[] = [];
   const activeData: any[] = [];
+  const { mode, updateMode } = useContext(GraphModeContext);
   const classes = useStyles();
+  let color: string = CONFIRMED_COLOR;
+  switch (mode) {
+    case 'confirmed': {
+      color = CONFIRMED_COLOR;
+      break;
+    }
 
-  const { mode } = useContext(GraphModeContext);
+    case 'active': {
+      color = ACTIVE_COLOR;
+      break;
+    }
+    case 'recovered': {
+      color = RECOVERED_COLOR;
+      break;
+    }
+    case 'deaths': {
+      color = DEATH_COLOR;
+      break;
+    }
+  }
+  const minimalSelectClasses = useMinimalSelectStyles({color});
+
+  const iconComponent = (props: any) => {
+    return (
+      <ExpandMoreIcon
+        className={props.className + ' ' + minimalSelectClasses.icon}
+      />
+    );
+  };
+
+  // moves the menu below the select input
+  const menuProps: any = {
+    classes: {
+      paper: minimalSelectClasses.paper,
+      list: minimalSelectClasses.list
+    },
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left'
+    },
+    transformOrigin: {
+      vertical: 'top',
+      horizontal: 'left'
+    },
+    getContentAnchorEl: null
+  };
   countriesData.Day.forEach((dayItem: any) => {
     const confirmedReports: any = {};
     const recoveredReports: any = {};
@@ -186,15 +237,27 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       </div>
     );
   };
+  const handleChange = (event: any) => {
+    updateMode(event.target.value);
+  };
   return (
     <div className={classes.root}>
       <div className={classes.graphHeader}>
-        {mode === 'confirmed' &&
-          <div className={classes.confirmed}>Confirmed</div>}
-        {mode === 'active' && <div className={classes.active}>Active</div>}
-        {mode === 'recovered' &&
-          <div className={classes.recovered}>Recovered</div>}
-        {mode === 'deaths' && <div className={classes.deaths}>Deaths</div>}
+        <FormControl>
+          <Select
+            disableUnderline
+            classes={{ root: `${minimalSelectClasses.select}` }}
+            MenuProps={menuProps}
+            IconComponent={iconComponent}
+            value={mode}
+            onChange={handleChange}
+          >
+            <MenuItem value={'confirmed'}>Confirmed</MenuItem>
+            <MenuItem value={'active'}>Active</MenuItem>
+            <MenuItem value={'recovered'}>Recovered</MenuItem>
+            <MenuItem value={'deaths'}>Deaths</MenuItem>
+          </Select>
+        </FormControl>
         <Hidden xsDown>
           <div>
             {renderDatePicker()}
