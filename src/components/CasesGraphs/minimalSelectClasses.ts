@@ -11,9 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
       borderColor: '#ccc',
       borderWidth: 1,
       borderRadius: 4,
-      paddingLeft: 24,
-      paddingTop: 10,
-      paddingBottom: 11,
+      paddingLeft: 18.5,
+      paddingTop: 10.5,
+      paddingBottom: 10.5,
       ...colorStyles,
       '&:focus': {
         borderRadius: 4,

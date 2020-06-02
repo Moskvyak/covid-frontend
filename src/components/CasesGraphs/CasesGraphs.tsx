@@ -67,6 +67,14 @@ const useStyles = makeStyles((theme: Theme) =>
         marginTop: 16
       }
     },
+    graphHeaderSelectWrapper: {
+      paddingTop: 8,
+      [theme.breakpoints.up('sm')]: {
+        paddingTop: 0,
+        marginTop: 8,
+        marginBottom: 4
+      }
+    },
     datePickerWrapper: {
       flex: 1,
       display: 'flex',
@@ -243,7 +251,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   return (
     <div className={classes.root}>
       <div className={classes.graphHeader}>
-        <FormControl>
+        <FormControl className={classes.graphHeaderSelectWrapper}>
           <Select
             disableUnderline
             classes={{ root: `${minimalSelectClasses.select}` }}
