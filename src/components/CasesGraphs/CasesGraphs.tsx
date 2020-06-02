@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: 16,
       paddingLeft: 16,
       display: 'flex',
-      flexWrap: 'wrap',
+      flexWrap: 'nowrap',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
       [theme.breakpoints.up('sm')]: {
@@ -60,15 +60,20 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     graphWrapper: {
-      height: 280,
+      height: 260,
       width: '100%',
+      paddingLeft: 8,
+      paddingRight: 8,
       [theme.breakpoints.up('sm')]: {
         height: 300,
-        marginTop: 16
+        marginTop: 16,
+        paddingLeft: 0,
+        paddingRight: 0,
       }
     },
     graphHeaderSelectWrapper: {
       paddingTop: 8,
+      flex: '0 0 auto',
       [theme.breakpoints.up('sm')]: {
         paddingTop: 0,
         marginTop: 8,
@@ -80,20 +85,42 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'flex-start',
       paddingLeft: 8,
+      paddingRight: 8,
       marginBottom: 16,
       [theme.breakpoints.up('sm')]: {
         justifyContent: 'center',
         padding: 0,
+        marginLeft: 8,
+        marginRight: 8,
         marginBottom: 0
+      },
+      [theme.breakpoints.up('md')]: {
+        marginLeft: 16,
+        marginRight: 0
       }
     },
     datePicker: {
       flexDirection: 'row',
+      [theme.breakpoints.down('xs')]: {
+        width: '100%'
+      },
       '& .MuiFormControl-root': {
-        marginRight: 8,
-        marginLeft: 8,
+        marginRight: 0,
+        marginLeft: 0,
+        [theme.breakpoints.down('sm')]: {
+          marginRight: 8,
+          marginLeft: 8
+        },
         [theme.breakpoints.down('xs')]: {
-          width: 100
+          width: 100,
+          flex: 1
+        }
+      },
+      '& .MuiPickersDateRangePickerInput-toLabelDelimiter': {
+        marginLeft: 8,
+        marginRight: 8,
+        [theme.breakpoints.down('xs')]: {
+          flex: '0 0 auto'
         }
       }
     },
@@ -164,7 +191,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       break;
     }
   }
-  const minimalSelectClasses = useMinimalSelectStyles({color});
+  const minimalSelectClasses = useMinimalSelectStyles({ color });
 
   const iconComponent = (props: any) => {
     return (
