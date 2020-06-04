@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@material-ui/pickers';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 
 import { GraphPage } from './pages/GraphPage';
+import { TrendsPage } from './pages/TrendsPage';
 import { AboutPage } from './pages/AboutPage';
 import { Menu } from './pages/Menu';
 import { Topbar } from './pages/Topbar';
@@ -71,22 +72,26 @@ function App() {
             <Topbar onSidebarOpen={handleSidebarOpen}/>
             <Menu
               variant={variant}
+              onMenuItemClick={handleSidebarClose}
               onClose={handleSidebarClose}
               open={shouldOpenSidebar}
             />
             <div className={classes.content}>
               <Switch>
-                <Route path="/graphs" exact>
+                <Route path="/timeline" exact>
                   <GraphPage />
+                </Route>
+                <Route path="/trends" exact>
+                  <TrendsPage />
                 </Route>
                 <Route path="/about" exact>
                   <AboutPage />
                 </Route>
                 <Route path="/">
-                  <Redirect to="/graphs" />
+                  <Redirect to="/timeline" />
                 </Route>
                 <Route path="*">
-                  <Redirect to="/graphs" />
+                  <Redirect to="/timeline" />
                 </Route>
               </Switch>
             </div>
