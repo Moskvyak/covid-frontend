@@ -85,12 +85,12 @@ const GraphPage: React.FC = () => {
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
       const selectedCountries = data.Day[0].Reports
-        .slice(0, 3)
+        .slice(0, 5)
         .map((report: any) => {
           const country = {
+            ...report,
             name: report.Location.name,
             id: report.Location.id,
-            ...report
           };
           return country;
         });
@@ -116,9 +116,9 @@ const GraphPage: React.FC = () => {
   if (getCountriesData && getCountriesData.Day) {
     countries = getCountriesData.Day[0].Reports.map((report: any) => {
       const country = {
+        ...report,
         name: report.Location.name,
         id: report.Location.id,
-        ...report
       };
       return country;
     });

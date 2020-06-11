@@ -12,7 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { ReportsBlock } from '../../components/ReportsBlock';
+import { TrendsReportsBlock } from '../../components/TrendsReportsBlock';
 import { ListOfCountries } from '../../components/ListOfCountries';
 import { SelectedCountries } from '../../components/SelectedCountries';
 import { WorldStatsBlock } from '../../components/WorldStatsBlock';
@@ -88,9 +88,9 @@ const TrendsPage: React.FC = () => {
         .slice(0, 3)
         .map((report: any) => {
           const country = {
+            ...report,
             name: report.Location.name,
-            id: report.Location.id,
-            ...report
+            id: report.Location.id
           };
           return country;
         });
@@ -116,9 +116,9 @@ const TrendsPage: React.FC = () => {
   if (getCountriesData && getCountriesData.Day) {
     countries = getCountriesData.Day[0].Reports.map((report: any) => {
       const country = {
+        ...report,
         name: report.Location.name,
         id: report.Location.id,
-        ...report
       };
       return country;
     });
@@ -146,7 +146,7 @@ const TrendsPage: React.FC = () => {
         <div className={classes.rowFlex}>
           <div className={classes.mainSection}>
             <div className={`${classes.graphsWrapper}`}>
-              <ReportsBlock
+              <TrendsReportsBlock
                 selectedCountries={selectedCountries}
                 openFilters={handleOpenFiltersDialog}
               />
