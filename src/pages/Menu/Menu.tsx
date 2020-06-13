@@ -47,9 +47,10 @@ interface Props {
   open: boolean;
   variant: 'permanent' | 'persistent' | 'temporary',
   onClose(): void;
+  onMenuItemClick(): void;
 }
 const Menu: React.FC<Props> = (props: Props) => {
-  const { open, variant, onClose } = props;
+  const { open, variant, onClose, onMenuItemClick } = props;
 
   const classes = useStyles();
 
@@ -74,16 +75,29 @@ const Menu: React.FC<Props> = (props: Props) => {
         </div>
         <ListItem
           button
+          onClick={onMenuItemClick}
           className={classes.menuItem}
           component={NavLink}
-          to="/graphs"
+          to="/timeline"
           activeClassName={classes.menuItemSelected}
           exact
         >
-          Graphs
+          Timeline
         </ListItem>
         <ListItem
           button
+          onClick={onMenuItemClick}
+          className={classes.menuItem}
+          component={NavLink}
+          to="/trends"
+          activeClassName={classes.menuItemSelected}
+          exact
+        >
+          Trends
+        </ListItem>
+        <ListItem
+          button
+          onClick={onMenuItemClick}
           component={NavLink}
           className={classes.menuItem}
           to="/about"

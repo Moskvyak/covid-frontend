@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
+import { GraphModeContext } from '../../contexts/GraphModeContext';
 
 import {
   RECOVERED_COLOR,

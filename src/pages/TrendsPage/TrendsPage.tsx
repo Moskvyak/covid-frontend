@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import Dialog from '@material-ui/core/Dialog';
@@ -12,7 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { ReportsBlock } from '../../components/ReportsBlock';
+import { TrendsReportsBlock } from '../../components/TrendsReportsBlock';
 import { ListOfCountries } from '../../components/ListOfCountries';
 import { SelectedCountries } from '../../components/SelectedCountries';
 import { WorldStatsBlock } from '../../components/WorldStatsBlock';
@@ -70,12 +69,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const GraphPage: React.FC = () => {
+const TrendsPage: React.FC = () => {
   let countries: any[] = [];
   const [selectedCountries, setSelectedCountries] = useState(countries);
   const [openAllCountriesDialog, setOpenAllCoutriesDialog] = useState(false);
   const [openFiltersDialog, setOpenFiltersDialog] = useState(false);
-
   const [value, setValue] = useState('one');
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
@@ -85,12 +83,12 @@ const GraphPage: React.FC = () => {
   const { data: getCountriesData } = useQuery(GET_COUNTRIES, {
     onCompleted: (data: any) => {
       const selectedCountries = data.Day[0].Reports
-        .slice(0, 5)
+        .slice(0, 3)
         .map((report: any) => {
           const country = {
             ...report,
             name: report.Location.name,
-            id: report.Location.id,
+            id: report.Location.id
           };
           return country;
         });
@@ -142,7 +140,7 @@ const GraphPage: React.FC = () => {
         <div className={classes.rowFlex}>
           <div className={classes.mainSection}>
             <div className={`${classes.graphsWrapper}`}>
-              <ReportsBlock
+              <TrendsReportsBlock
                 selectedCountries={selectedCountries}
                 openFilters={handleOpenFiltersDialog}
               />
@@ -231,4 +229,4 @@ const GraphPage: React.FC = () => {
   );
 };
 
-export { GraphPage };
+export { TrendsPage };

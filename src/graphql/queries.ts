@@ -25,6 +25,27 @@ export const GET_CONTRIES_REPORTS = gql`
   }
 `;
 
+export const GET_COUNTRIES_ALL_REPORTS_BY_IDS = gql`
+  query MyQuery($locationIds: [Int!]) {
+    Location(where: { id: { _in: $locationIds } }) {
+      id
+      name
+      Reports(order_by: { Day: { date: asc } }) {
+        confirmedTotal
+        confirmedNew
+        deathsNew
+        deathsTotal
+        recoveredNew
+        recoveredTotal
+        Day {
+          date
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const GET_COUNTRIES = gql`
   query MyQuery {
     Day(order_by: { date: desc }, limit: 1) {

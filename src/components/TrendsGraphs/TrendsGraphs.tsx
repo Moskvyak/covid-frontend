@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import moment from 'moment';
+import React, { useContext, useState } from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
 import Hidden from '@material-ui/core/Hidden';
@@ -7,12 +6,13 @@ import Hidden from '@material-ui/core/Hidden';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { GraphModeContext } from '../../contexts/GraphModeContext';
-import { DateRangePicker, DateRange } from '@material-ui/pickers';
 import TuneIcon from '@material-ui/icons/Tune';
 import IconButton from '@material-ui/core/IconButton';
 import useMinimalSelectStyles from '../../common/minimalSelectClasses';
+import { filterData } from './filterData';
 
 import {
   RECOVERED_COLOR,
@@ -23,8 +23,6 @@ import {
 interface Props {
   selectedCountries: any[];
   countriesData: any;
-  handleDateChange: (date: DateRange) => void;
-  selectedRange: DateRange;
   openFilters(): void;
 }
 
@@ -68,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
         height: 300,
         marginTop: 16,
         paddingLeft: 0,
-        paddingRight: 0,
+        paddingRight: 0
       }
     },
     graphHeaderSelectWrapper: {
@@ -157,19 +155,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const CasesGraphs: React.FC<Props> = (props: Props) => {
-  const {
-    selectedCountries,
-    countriesData,
-    selectedRange,
-    handleDateChange,
-    openFilters
-  } = props;
-  const confirmedData: any[] = [];
-  const recoveredData: any[] = [];
-  const deathsData: any[] = [];
-  const activeData: any[] = [];
+const TrendsGraphs: React.FC<Props> = (props: Props) => {
+  const { selectedCountries, countriesData, openFilters } = props;
   const { mode, updateMode } = useContext(GraphModeContext);
+  const [minimumCases, setMinimumCases] = useState('100');
   const classes = useStyles();
   let color: string = CONFIRMED_COLOR;
   switch (mode) {
@@ -177,7 +166,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       color = CONFIRMED_COLOR;
       break;
     }
-
     case 'active': {
       color = ACTIVE_COLOR;
       break;
@@ -217,57 +205,42 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     },
     getContentAnchorEl: null
   };
-  countriesData.Day.forEach((dayItem: any) => {
-    const confirmedReports: any = {};
-    const recoveredReports: any = {};
-    const deathsReports: any = {};
-    const activeReports: any = {};
 
-    dayItem.Reports.forEach((report: any) => {
-      const key = report.Location.name;
-      confirmedReports[key] = report.confirmedTotal;
-      recoveredReports[key] = report.recoveredTotal;
-      deathsReports[key] = report.deathsTotal;
-      activeReports[key] =
-        report.confirmedTotal - report.recoveredTotal - report.deathsTotal;
-    });
-    const id = moment(dayItem.date).format('MMM DD');
-    const newConfirmedItem = {
-      id,
-      ...confirmedReports
-    };
-    const newRecoveredItem = {
-      id,
-      ...recoveredReports
-    };
-    const newDeathsItem = {
-      id,
-      ...deathsReports
-    };
-    const newActiveItem = {
-      id,
-      ...activeReports
-    };
-    confirmedData.push(newConfirmedItem);
-    recoveredData.push(newRecoveredItem);
-    deathsData.push(newDeathsItem);
-    activeData.push(newActiveItem);
-  });
+  const parsedMinumCases = minimumCases === '' ? 0 : parseInt(minimumCases);
+  const confirmedData = filterData(
+    parsedMinumCases,
+    'confirmedTotal',
+    countriesData
+  );
+  const recoveredData = filterData(
+    parsedMinumCases,
+    'recoveredTotal',
+    countriesData
+  );
+  const deathsData = filterData(parsedMinumCases, 'deathsTotal', countriesData);
+  const activeData = filterData(parsedMinumCases, 'activeTotal', countriesData);
 
-  const renderDatePicker = () => {
+  const handleMinimumCasesChange = (event: any) => {
+    if (event.target.value === '') {
+      setMinimumCases('');
+    } else {
+      const value = Number(event.target.value);
+      if (!isNaN(value)) {
+        setMinimumCases(event.target.value);
+      }
+    }
+  };
+  const renderMinimumCasesPicker = () => {
     return (
       <div className={`${classes.datePickerWrapper}`}>
-        <DateRangePicker
+        <TextField
           className={classes.datePicker}
-          startText="Start date"
-          endText="End date"
-          inputFormat={'DD/MM/YYYY'}
           margin="dense"
           color="primary"
-          value={selectedRange}
-          minDate={moment('2020-01-22')}
-          maxDate={moment()}
-          onChange={date => handleDateChange(date)}
+          variant="outlined"
+          label="From N cases"
+          value={minimumCases}
+          onChange={handleMinimumCasesChange}
         />
       </div>
     );
@@ -293,22 +266,18 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
             <MenuItem value={'deaths'}>Deaths</MenuItem>
           </Select>
         </FormControl>
-        <Hidden xsDown>
-          <div>
-            {renderDatePicker()}
-          </div>
-        </Hidden>
+
+        <div>
+          {renderMinimumCasesPicker()}
+        </div>
+
         <Hidden mdUp>
           <IconButton color="inherit" onClick={openFilters}>
             <TuneIcon />
           </IconButton>
         </Hidden>
       </div>
-      <Hidden smUp>
-        <div>
-          {renderDatePicker()}
-        </div>
-      </Hidden>
+
       <div className={classes.graphWrapper}>
         {selectedCountries.length > 0 &&
           mode === 'confirmed' &&
@@ -339,4 +308,4 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   );
 };
 
-export { CasesGraphs };
+export { TrendsGraphs };

@@ -5,7 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
-import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
+import { GraphModeContext } from '../../contexts/GraphModeContext';
 import { CountryListItem } from '../CountryListItem';
 import { CountryListHeader } from '../CountryListHeader';
 import { colors } from '../../data';
