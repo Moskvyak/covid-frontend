@@ -275,7 +275,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   const handleChange = (event: any) => {
     updateMode(event.target.value);
   };
-  console.log({confirmedData})
   return (
     <div className={classes.root}>
       <div className={classes.graphHeader}>
