@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { GraphModeContext } from './GraphModeContext';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import Dialog from '@material-ui/core/Dialog';
@@ -75,7 +74,6 @@ const TrendsPage: React.FC = () => {
   const [selectedCountries, setSelectedCountries] = useState(countries);
   const [openAllCountriesDialog, setOpenAllCoutriesDialog] = useState(false);
   const [openFiltersDialog, setOpenFiltersDialog] = useState(false);
-  const [graphMode, setGraphMode] = useState('confirmed');
   const [value, setValue] = useState('one');
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
@@ -109,9 +107,6 @@ const TrendsPage: React.FC = () => {
       setSelectedCountries(updatedCountries);
     }
   };
-  const updateMode = (mode: string) => {
-    setGraphMode(mode);
-  };
 
   if (getCountriesData && getCountriesData.Day) {
     countries = getCountriesData.Day[0].Reports.map((report: any) => {
@@ -138,7 +133,6 @@ const TrendsPage: React.FC = () => {
   };
 
   return (
-    <GraphModeContext.Provider value={{ mode: graphMode, updateMode }}>
       <div className={classes.root}>
         <div className={classes.totalWrapper}>
           <WorldStatsBlock />
@@ -232,7 +226,6 @@ const TrendsPage: React.FC = () => {
           </Dialog>
         </Hidden>
       </div>
-    </GraphModeContext.Provider>
   );
 };
 

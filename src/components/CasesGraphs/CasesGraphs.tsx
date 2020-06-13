@@ -8,7 +8,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { GraphModeContext } from '../../pages/GraphPage/GraphModeContext';
+import { GraphModeContext } from '../../contexts/GraphModeContext';
 import { DateRangePicker, DateRange } from '@material-ui/pickers';
 import TuneIcon from '@material-ui/icons/Tune';
 import IconButton from '@material-ui/core/IconButton';

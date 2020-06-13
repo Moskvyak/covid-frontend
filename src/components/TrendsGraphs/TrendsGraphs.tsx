@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { GraphModeContext } from '../../pages/TrendsPage/GraphModeContext';
+import { GraphModeContext } from '../../contexts/GraphModeContext';
 import TuneIcon from '@material-ui/icons/Tune';
 import IconButton from '@material-ui/core/IconButton';
 import useMinimalSelectStyles from '../../common/minimalSelectClasses';
