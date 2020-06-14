@@ -36,15 +36,14 @@ export default class Example extends Component<Props, any> {
       <div>
         <ChartRace
           data={this.state.data}
-          backgroundColor="#000"
           width={760}
           padding={12}
           itemHeight={20}
           gap={12}
-          titleStyle={{ font: 'normal 400 13px Arial', color: '#fff', width: 50, marginRight: 10 }}
+          titleStyle={{ font: 'normal 400 13px Arial', color: '#222', width: 50, marginRight: 10 }}
           valueStyle={{
             font: 'normal 400 11px Arial',
-            color: 'rgba(255,255,255, 0.42)'
+            color: '#222'
           }}
         />
       </div>

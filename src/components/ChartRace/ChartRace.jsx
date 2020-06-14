@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { applyThousandSeparator } from '../../utils/formatter';
+
 import './style.css'
 
 export default class ChartRace extends Component {
@@ -56,7 +58,7 @@ export default class ChartRace extends Component {
         />
         <span>
           <i style={this.props.valueStyle}>
-            {item.value}
+           {applyThousandSeparator(item.value.toString(), ',', 'thousand')}
           </i>
         </span>
       </div>

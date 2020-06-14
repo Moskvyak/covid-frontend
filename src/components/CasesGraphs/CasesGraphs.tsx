@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
+import { colors } from '../../data';
 import Hidden from '@material-ui/core/Hidden';
 import Example from '../ChartRace/Example';
 
@@ -238,6 +239,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       const item = {
         id: report.Location.id,
         title: key,
+        color: colors[selectedCountries.findIndex(country => country.name === key)],
         value: report.confirmedTotal
       };
       console.log({item});
