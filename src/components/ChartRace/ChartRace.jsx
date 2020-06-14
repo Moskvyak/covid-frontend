@@ -30,7 +30,7 @@ export default class ChartRace extends Component {
           indis * this.props.gap
     return (
       <div
-        key={index}
+        key={item.id}
         className='raceItem'
         style={{
           height: this.props.itemHeight,
