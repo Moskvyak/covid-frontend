@@ -18,6 +18,7 @@ export const GET_CONTRIES_REPORTS = gql`
         recoveredTotal
         deathsTotal
         Location {
+          id
           name
         }
       }

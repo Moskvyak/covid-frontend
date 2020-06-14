@@ -3,6 +3,7 @@ import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { SimpleChart } from '../SimpleChart';
 import Hidden from '@material-ui/core/Hidden';
+import Example from '../ChartRace/Example';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -217,7 +218,11 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     },
     getContentAnchorEl: null
   };
+  console.log({countriesData});
+  const chartData: any[] = [];
+  let skipExample = false;
   countriesData.Day.forEach((dayItem: any) => {
+    const chartDataArrayItem: any[] = [];
     const confirmedReports: any = {};
     const recoveredReports: any = {};
     const deathsReports: any = {};
@@ -230,6 +235,13 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       deathsReports[key] = report.deathsTotal;
       activeReports[key] =
         report.confirmedTotal - report.recoveredTotal - report.deathsTotal;
+      const item = {
+        id: report.Location.id,
+        title: key,
+        value: report.confirmedTotal
+      };
+      console.log({item});
+      chartDataArrayItem.push(item);
     });
     const id = moment(dayItem.date).format('MMM DD');
     const newConfirmedItem = {
@@ -251,8 +263,13 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     confirmedData.push(newConfirmedItem);
     recoveredData.push(newRecoveredItem);
     deathsData.push(newDeathsItem);
-    activeData.push(newActiveItem);
+    activeData.push(newActiveItem); 
+    if (!chartDataArrayItem.length) {
+      skipExample = true;
+    }
+    chartData.push(chartDataArrayItem);
   });
+  console.log({chartData});
 
   const renderDatePicker = () => {
     return (
@@ -275,6 +292,7 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   const handleChange = (event: any) => {
     updateMode(event.target.value);
   };
+
   return (
     <div className={classes.root}>
       <div className={classes.graphHeader}>
@@ -311,11 +329,8 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       </Hidden>
       <div className={classes.graphWrapper}>
         {selectedCountries.length > 0 &&
-          mode === 'confirmed' &&
-          <SimpleChart
-            data={confirmedData}
-            selectedCountries={selectedCountries}
-          />}
+          mode === 'confirmed' && !skipExample
+          && <Example chartData={chartData}/>}
         {selectedCountries.length > 0 &&
           mode === 'active' &&
           <SimpleChart
