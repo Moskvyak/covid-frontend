@@ -50,6 +50,8 @@ export default class ChartRace extends Component {
         <b
           style={{
             backgroundColor: item.color,
+            borderRadius: 4,
+            borderWidth: 1,
             width:
               item.value /
               this.state.maxValue *
@@ -71,6 +73,8 @@ export default class ChartRace extends Component {
         className='raceArea'
         style={{
           backgroundColor: this.props.backgroundColor,
+          borderRadius: 4,
+          borderWidth: 1,
           paddingTop: this.props.padding,
           paddingBottom: this.props.padding,
           width: this.props.width,

@@ -15,6 +15,7 @@ import { useMediaQuery, useTheme } from '@material-ui/core';
 import { LocalizationProvider } from '@material-ui/pickers';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 
+import { ChartRacePage } from './pages/ChartRacePage';
 import { GraphPage } from './pages/GraphPage';
 import { TrendsPage } from './pages/TrendsPage';
 import { AboutPage } from './pages/AboutPage';
@@ -87,6 +88,9 @@ function App() {
               />
               <div className={classes.content}>
                 <Switch>
+                  <Route path="/chart-race" exact>
+                    <ChartRacePage />
+                  </Route>
                   <Route path="/timeline" exact>
                     <GraphPage />
                   </Route>
@@ -97,10 +101,10 @@ function App() {
                     <AboutPage />
                   </Route>
                   <Route path="/">
-                    <Redirect to="/timeline" />
+                    <Redirect to="/chart-race" />
                   </Route>
                   <Route path="*">
-                    <Redirect to="/timeline" />
+                    <Redirect to="/chart-race" />
                   </Route>
                 </Switch>
               </div>

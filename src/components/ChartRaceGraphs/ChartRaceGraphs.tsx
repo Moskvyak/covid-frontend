@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import { SimpleChart } from '../SimpleChart';
+import { colors } from '../../data';
 import Hidden from '@material-ui/core/Hidden';
+import Example from '../ChartRace/Example';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -157,7 +158,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const CasesGraphs: React.FC<Props> = (props: Props) => {
+const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   const {
     selectedCountries,
     countriesData,
@@ -165,10 +166,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     handleDateChange,
     openFilters
   } = props;
-  const confirmedData: any[] = [];
-  const recoveredData: any[] = [];
-  const deathsData: any[] = [];
-  const activeData: any[] = [];
   const { mode, updateMode } = useContext(GraphModeContext);
   const classes = useStyles();
   let color: string = CONFIRMED_COLOR;
@@ -217,41 +214,59 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     },
     getContentAnchorEl: null
   };
+  console.log({ countriesData });
+  const confirmedData: any[] = [];
+  const activeData: any[] = [];
+  const recoveredData: any[] = [];
+  const deathsData: any[] = [];
+  let skipExample = false;
   countriesData.Day.forEach((dayItem: any) => {
-    const confirmedReports: any = {};
-    const recoveredReports: any = {};
-    const deathsReports: any = {};
-    const activeReports: any = {};
+    const confirmedDataArrayItem: any[] = [];
+    const activeDataArrayItem: any[] = [];
+    const recoveredDataArrayItem: any[] = [];
+    const deathsDataArrayItem: any[] = [];
 
     dayItem.Reports.forEach((report: any) => {
       const key = report.Location.name;
-      confirmedReports[key] = report.confirmedTotal;
-      recoveredReports[key] = report.recoveredTotal;
-      deathsReports[key] = report.deathsTotal;
-      activeReports[key] =
+      const defaultItem = {
+        id: report.Location.id,
+        title: key,
+        color:
+          colors[selectedCountries.findIndex(country => country.name === key)]
+      };
+
+      const activeValue =
         report.confirmedTotal - report.recoveredTotal - report.deathsTotal;
+      const confirmedItem = {
+        ...defaultItem,
+        value: report.confirmedTotal
+      };
+      const activeItem = {
+        ...defaultItem,
+        value: activeValue
+      };
+      const recoveredItem = {
+        ...defaultItem,
+        value: report.recoveredTotal
+      };
+      const deathItem = {
+        ...defaultItem,
+        value: report.deathsTotal
+      };
+      recoveredDataArrayItem.push(recoveredItem);
+      deathsDataArrayItem.push(deathItem);
+      activeDataArrayItem.push(activeItem);
+      confirmedDataArrayItem.push(confirmedItem);
     });
-    const id = moment(dayItem.date).format('MMM DD');
-    const newConfirmedItem = {
-      id,
-      ...confirmedReports
-    };
-    const newRecoveredItem = {
-      id,
-      ...recoveredReports
-    };
-    const newDeathsItem = {
-      id,
-      ...deathsReports
-    };
-    const newActiveItem = {
-      id,
-      ...activeReports
-    };
-    confirmedData.push(newConfirmedItem);
-    recoveredData.push(newRecoveredItem);
-    deathsData.push(newDeathsItem);
-    activeData.push(newActiveItem);
+
+    if (!confirmedDataArrayItem.length) {
+      skipExample = true;
+    }
+    const title = moment(dayItem.date).format('MMM DD');
+    confirmedData.push({ title, data: confirmedDataArrayItem});
+    activeData.push({ title, data: activeDataArrayItem});
+    recoveredData.push({ title, data: recoveredDataArrayItem});
+    deathsData.push({ title, data: deathsDataArrayItem});
   });
 
   const renderDatePicker = () => {
@@ -313,31 +328,23 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       <div className={classes.graphWrapper}>
         {selectedCountries.length > 0 &&
           mode === 'confirmed' &&
-          <SimpleChart
-            data={confirmedData}
-            selectedCountries={selectedCountries}
-          />}
+          !skipExample &&
+          <Example chartData={confirmedData} />}
         {selectedCountries.length > 0 &&
           mode === 'active' &&
-          <SimpleChart
-            data={activeData}
-            selectedCountries={selectedCountries}
-          />}
+          !skipExample &&
+          <Example chartData={activeData} />}
         {selectedCountries.length > 0 &&
           mode === 'recovered' &&
-          <SimpleChart
-            data={recoveredData}
-            selectedCountries={selectedCountries}
-          />}
+          !skipExample &&
+          <Example chartData={recoveredData} />}
         {selectedCountries.length > 0 &&
           mode === 'deaths' &&
-          <SimpleChart
-            data={deathsData}
-            selectedCountries={selectedCountries}
-          />}
+          !skipExample &&
+          <Example chartData={deathsData} />}
       </div>
     </div>
   );
 };
 
-export { CasesGraphs };
+export { ChartRaceGraphs };
