@@ -214,7 +214,6 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
     },
     getContentAnchorEl: null
   };
-  console.log({ countriesData });
   const confirmedData: any[] = [];
   const activeData: any[] = [];
   const recoveredData: any[] = [];
