@@ -42,10 +42,9 @@ interface Props {
 
 const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
   const { selectedCountries, openFilters } = props;
-  const today = moment();
-  const monthAgo = today.subtract(1, 'month');
+
   const [selectedRange, handleDateChange] = React.useState<DateRange>([
-    monthAgo,
+    null,
     null
   ]);
   const classes = useStyles();
