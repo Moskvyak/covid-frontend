@@ -145,7 +145,7 @@ const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
           centered
         >
           <Tab value="top" label="Top chart race" wrapped />
-          <Tab value="selected" label="Chart race on selected countries" />
+          <Tab value="selected" label="Selected Chart race" wrapped/>
         </Tabs>
         {selectionMode === 'selected' &&
           <SelectedChartRaceBlock

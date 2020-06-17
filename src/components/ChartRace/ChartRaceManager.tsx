@@ -15,9 +15,10 @@ interface State {
 }
 interface Props {
   chartData: ChartData[];
+  chartRaceWidth: number;
 }
 
-const CHART_INTERVAL_DELAY = 400;
+const CHART_INTERVAL_DELAY = 333;
 export default class ChartRaceManager extends Component<Props, State> {
   private runningInterval: any = null;
   constructor(props: Props) {
@@ -85,7 +86,7 @@ export default class ChartRaceManager extends Component<Props, State> {
         <div style={{ width: '100%' }}>
           <ChartRace
             data={this.state.currentChart.data}
-            width={600}
+            width={this.props.chartRaceWidth}
             padding={12}
             itemHeight={20}
             gap={12}

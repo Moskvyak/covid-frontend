@@ -3,8 +3,9 @@ import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { colors } from '../../data';
 import Hidden from '@material-ui/core/Hidden';
-import ChartRaceManager from '../ChartRace/ChartRaceManager';
+import { useMediaQuery } from '@material-ui/core';
 
+import ChartRaceManager from '../ChartRace/ChartRaceManager';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -166,6 +167,16 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
     handleDateChange,
     openFilters
   } = props;
+  const xs370 = useMediaQuery('(min-width:370px)');
+  const xs600 = useMediaQuery('(min-width:600px)');
+  let chartRaceWidth = 280;
+  if (xs370) {
+    chartRaceWidth = 320;
+  }
+
+  if (xs600) {
+    chartRaceWidth = 600
+  }
   const { mode, updateMode } = useContext(GraphModeContext);
   const classes = useStyles();
   let color: string = CONFIRMED_COLOR;
@@ -336,19 +347,19 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
         {selectedCountries.length > 0 &&
           mode === 'confirmed' &&
           !skipExample &&
-          <ChartRaceManager chartData={confirmedData} />}
+          <ChartRaceManager chartData={confirmedData} chartRaceWidth={chartRaceWidth}/>}
         {selectedCountries.length > 0 &&
           mode === 'active' &&
           !skipExample &&
-          <ChartRaceManager chartData={activeData} />}
+          <ChartRaceManager chartData={activeData} chartRaceWidth={chartRaceWidth}/>}
         {selectedCountries.length > 0 &&
           mode === 'recovered' &&
           !skipExample &&
-          <ChartRaceManager chartData={recoveredData} />}
+          <ChartRaceManager chartData={recoveredData} chartRaceWidth={chartRaceWidth}/>}
         {selectedCountries.length > 0 &&
           mode === 'deaths' &&
           !skipExample &&
-          <ChartRaceManager chartData={deathsData} />}
+          <ChartRaceManager chartData={deathsData} chartRaceWidth={chartRaceWidth}/>}
       </div>
     </div>
   );
