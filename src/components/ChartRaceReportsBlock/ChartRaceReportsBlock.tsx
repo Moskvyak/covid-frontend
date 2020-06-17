@@ -1,7 +1,9 @@
 import React from 'react';
-import moment from 'moment';
 import { useQuery } from '@apollo/react-hooks';
+
 import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { DateRange } from '@material-ui/pickers';
@@ -17,10 +19,15 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       height: '100%',
       padding: 8,
+      paddingTop: 0,
       [theme.breakpoints.up('sm')]: {
+        paddingTop: 0,
         padding: 24,
         paddingBottom: 0
       }
+    },
+    tabs: {
+      marginBottom: 8,
     },
     '@keyframes appear': {
       from: { opacity: 0 },
@@ -39,16 +46,20 @@ interface Props {
   selectedCountries: any[];
   openFilters(): void;
 }
+interface SelectedChartProps extends Props {
+  selectedRange: DateRange;
+  handleRangeChange: React.Dispatch<React.SetStateAction<DateRange>>;
+}
 
-const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
-  const { selectedCountries, openFilters } = props;
-
-  const [selectedRange, handleDateChange] = React.useState<DateRange>([
-    null,
-    null
-  ]);
-  const classes = useStyles();
-
+const SelectedChartRaceBlock: React.FC<SelectedChartProps> = (
+  props: SelectedChartProps
+) => {
+  const {
+    selectedCountries,
+    openFilters,
+    selectedRange,
+    handleRangeChange
+  } = props;
   const { data: getCountriesReportsData } = useQuery(GET_CONTRIES_REPORTS, {
     variables: {
       locationName: selectedCountries.map((country: any) => country.name),
@@ -56,21 +67,54 @@ const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
       endDate: selectedRange[1]
     }
   });
+  const classes = useStyles();
+  if (!getCountriesReportsData || !getCountriesReportsData.Day) {
+    return null;
+  }
+  return (
+    <div className={classes.fadeIn}>
+      <ChartRaceGraphs
+        openFilters={openFilters}
+        handleDateChange={handleRangeChange}
+        selectedRange={selectedRange}
+        selectedCountries={selectedCountries}
+        countriesData={getCountriesReportsData}
+      />
+    </div>
+  );
+};
+
+const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
+  const [selectionMode, handleSelectionMode] = React.useState('selected');
+  const [selectedRange, handleRangeChange] = React.useState<DateRange>([
+    null,
+    null
+  ]);
+  const classes = useStyles();
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+    handleSelectionMode(newValue);
+  };
 
   return (
     <div className={classes.root}>
       <Paper className={`${classes.container}`} elevation={1}>
-        {getCountriesReportsData &&
-          getCountriesReportsData.Day &&
-          <div className={classes.fadeIn}>
-            <ChartRaceGraphs
-              openFilters={openFilters}
-              handleDateChange={handleDateChange}
-              selectedRange={selectedRange}
-              selectedCountries={selectedCountries}
-              countriesData={getCountriesReportsData}
-            />
-          </div>}
+        <Tabs
+        className={classes.tabs}
+          value={selectionMode}
+          onChange={handleChange}
+          aria-label="filter tabs"
+          centered
+        >
+          <Tab value="top" label="Top chart race" wrapped />
+          <Tab value="selected" label="Chart race on selected countries" />
+        </Tabs>
+        {selectionMode === 'selected' &&
+          <SelectedChartRaceBlock
+            {...props}
+            selectedRange={selectedRange}
+            handleRangeChange={handleRangeChange}
+          />}
       </Paper>
     </div>
   );
