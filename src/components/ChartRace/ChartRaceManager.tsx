@@ -17,7 +17,8 @@ interface Props {
   chartData: ChartData[];
 }
 
-export default class Example extends Component<Props, State> {
+const CHART_INTERVAL_DELAY = 400;
+export default class ChartRaceManager extends Component<Props, State> {
   private runningInterval: any = null;
   constructor(props: Props) {
     super(props);
@@ -33,7 +34,7 @@ export default class Example extends Component<Props, State> {
     this.handleChange();
     this.runningInterval = setInterval(() => {
       this.handleChange();
-    }, 200);
+    }, CHART_INTERVAL_DELAY);
   }
 
   private handleChange = () => {
@@ -49,10 +50,9 @@ export default class Example extends Component<Props, State> {
   };
 
   private play = () => {
-
-      this.runningInterval = setInterval(() => {
-        this.handleChange();
-      }, 200);
+    this.runningInterval = setInterval(() => {
+      this.handleChange();
+    }, CHART_INTERVAL_DELAY);
   };
 
   private pause = () => {
@@ -67,7 +67,7 @@ export default class Example extends Component<Props, State> {
     this.setState({ currentChart, currentIndex: 0 }, () => {
       this.runningInterval = setInterval(() => {
         this.handleChange();
-      }, 200);
+      }, CHART_INTERVAL_DELAY);
     });
   };
 
@@ -103,7 +103,8 @@ export default class Example extends Component<Props, State> {
           />
         </div>
         <div style={{ width: '100%' }}>
-          {this.runningInterval === null && this.state.currentIndex !== this.props.chartData.length - 1 &&
+          {this.runningInterval === null &&
+            this.state.currentIndex !== this.props.chartData.length - 1 &&
             <IconButton color="inherit" onClick={this.play}>
               <PlayCircleOutlineIcon />
             </IconButton>}

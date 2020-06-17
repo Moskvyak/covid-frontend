@@ -9,7 +9,10 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { DateRange } from '@material-ui/pickers';
 import { ChartRaceGraphs } from '../ChartRaceGraphs';
 
-import { GET_CONTRIES_REPORTS } from '../../graphql/queries';
+import {
+  GET_CONTRIES_REPORTS,
+  GET_CHART_RACE_TOP_CONFIRMED
+} from '../../graphql/queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     tabs: {
-      marginBottom: 8,
+      marginBottom: 8
     },
     '@keyframes appear': {
       from: { opacity: 0 },
@@ -84,8 +87,43 @@ const SelectedChartRaceBlock: React.FC<SelectedChartProps> = (
   );
 };
 
+const TopChartRaceBlock: React.FC<SelectedChartProps> = (
+  props: SelectedChartProps
+) => {
+  const {
+    selectedCountries,
+    openFilters,
+    selectedRange,
+    handleRangeChange
+  } = props;
+  const {
+    data: getCountriesReportsData
+  } = useQuery(GET_CHART_RACE_TOP_CONFIRMED, {
+    variables: {
+      limit: 8,
+      startDate: selectedRange[0],
+      endDate: selectedRange[1]
+    }
+  });
+  const classes = useStyles();
+  if (!getCountriesReportsData || !getCountriesReportsData.Day) {
+    return null;
+  }
+  return (
+    <div className={classes.fadeIn}>
+      <ChartRaceGraphs
+        openFilters={openFilters}
+        handleDateChange={handleRangeChange}
+        selectedRange={selectedRange}
+        selectedCountries={selectedCountries}
+        countriesData={getCountriesReportsData}
+      />
+    </div>
+  );
+};
+
 const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
-  const [selectionMode, handleSelectionMode] = React.useState('selected');
+  const [selectionMode, handleSelectionMode] = React.useState('top');
   const [selectedRange, handleRangeChange] = React.useState<DateRange>([
     null,
     null
@@ -100,7 +138,7 @@ const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
     <div className={classes.root}>
       <Paper className={`${classes.container}`} elevation={1}>
         <Tabs
-        className={classes.tabs}
+          className={classes.tabs}
           value={selectionMode}
           onChange={handleChange}
           aria-label="filter tabs"
@@ -111,6 +149,12 @@ const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
         </Tabs>
         {selectionMode === 'selected' &&
           <SelectedChartRaceBlock
+            {...props}
+            selectedRange={selectedRange}
+            handleRangeChange={handleRangeChange}
+          />}
+        {selectionMode === 'top' &&
+          <TopChartRaceBlock
             {...props}
             selectedRange={selectedRange}
             handleRangeChange={handleRangeChange}

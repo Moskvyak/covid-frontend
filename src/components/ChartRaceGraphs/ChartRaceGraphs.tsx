@@ -3,7 +3,7 @@ import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { colors } from '../../data';
 import Hidden from '@material-ui/core/Hidden';
-import Example from '../ChartRace/Example';
+import ChartRaceManager from '../ChartRace/ChartRaceManager';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -174,7 +174,6 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
       color = CONFIRMED_COLOR;
       break;
     }
-
     case 'active': {
       color = ACTIVE_COLOR;
       break;
@@ -219,6 +218,10 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   const recoveredData: any[] = [];
   const deathsData: any[] = [];
   let skipExample = false;
+  const selectedColorsHashMap: {[id: number]: string} = {};
+  selectedCountries.forEach((country, index) => {
+    selectedColorsHashMap[country.id] = colors[index];
+  })
   countriesData.Day.forEach((dayItem: any) => {
     const confirmedDataArrayItem: any[] = [];
     const activeDataArrayItem: any[] = [];
@@ -227,11 +230,16 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
 
     dayItem.Reports.forEach((report: any) => {
       const key = report.Location.name;
+      const id = report.Location.id;
+      if (!selectedColorsHashMap[id]) {
+        selectedColorsHashMap[id] = colors[Object.keys(selectedColorsHashMap).length]
+      }
+      const color = selectedColorsHashMap[id];
+
       const defaultItem = {
-        id: report.Location.id,
+        id,
         title: key,
-        color:
-          colors[selectedCountries.findIndex(country => country.name === key)]
+        color
       };
 
       const activeValue =
@@ -328,19 +336,19 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
         {selectedCountries.length > 0 &&
           mode === 'confirmed' &&
           !skipExample &&
-          <Example chartData={confirmedData} />}
+          <ChartRaceManager chartData={confirmedData} />}
         {selectedCountries.length > 0 &&
           mode === 'active' &&
           !skipExample &&
-          <Example chartData={activeData} />}
+          <ChartRaceManager chartData={activeData} />}
         {selectedCountries.length > 0 &&
           mode === 'recovered' &&
           !skipExample &&
-          <Example chartData={recoveredData} />}
+          <ChartRaceManager chartData={recoveredData} />}
         {selectedCountries.length > 0 &&
           mode === 'deaths' &&
           !skipExample &&
-          <Example chartData={deathsData} />}
+          <ChartRaceManager chartData={deathsData} />}
       </div>
     </div>
   );

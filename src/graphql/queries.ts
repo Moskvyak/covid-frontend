@@ -26,6 +26,29 @@ export const GET_CONTRIES_REPORTS = gql`
   }
 `;
 
+export const GET_CHART_RACE_TOP_CONFIRMED = gql`
+  query MyQuery($startDate: timestamptz, $endDate: timestamptz, $limit: Int!) {
+    Day(
+      where: { date: { _gte: $startDate, _lte: $endDate } }
+      order_by: { date: asc }
+    ) {
+      id
+      date
+      Reports(order_by: { confirmedTotal: desc }, limit: $limit) {
+        id
+        confirmedTotal
+        Day {
+          date
+        }
+        Location {
+          name
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const GET_COUNTRIES_ALL_REPORTS_BY_IDS = gql`
   query MyQuery($locationIds: [Int!]) {
     Location(where: { id: { _in: $locationIds } }) {
