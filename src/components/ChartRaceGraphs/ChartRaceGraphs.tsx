@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { colors } from '../../data';
 import Hidden from '@material-ui/core/Hidden';
-import { useMediaQuery } from '@material-ui/core';
 
 import ChartRaceManager from '../ChartRace/ChartRaceManager';
 import Select from '@material-ui/core/Select';
@@ -168,16 +167,38 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
     handleDateChange,
     openFilters
   } = props;
-  const xs370 = useMediaQuery('(min-width:370px)');
-  const xs600 = useMediaQuery('(min-width:600px)');
-  let chartRaceWidth = 280;
-  if (xs370) {
-    chartRaceWidth = 320;
-  }
+  const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const iw = iOS ? window.screen.width : window.innerWidth;
+  const [innerValue, setInnerValue] = useState(iw);
+  const handleResize = () => {
+    const newW = iOS ? window.screen.width : window.innerWidth;
+    setInnerValue(newW);
+  };
+  useEffect(
+    () => {
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
-  if (xs600) {
-    chartRaceWidth = 600;
-  }
+
+  const calculateChartRaceWidth = (innerWidth: number) => {
+    if (innerWidth < 600) {
+      return innerWidth - 48;
+    }
+    if (innerWidth < 960) {
+      return innerWidth - 80;
+    }
+    if (innerWidth < 1280) {
+      return innerWidth - 492;
+    }
+    return innerWidth - 732;
+  };
+
+  const chartRaceWidth = calculateChartRaceWidth(innerValue);
+
   const { mode, updateMode } = useContext(GraphModeContext);
   const classes = useStyles();
   let color: string = CONFIRMED_COLOR;
@@ -313,31 +334,33 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   return (
     <div className={classes.root}>
       <div className={classes.graphHeader}>
-        {!props.onlyTop && <FormControl className={classes.graphHeaderSelectWrapper}>
-          <Select
-            disableUnderline
-            classes={{ root: `${minimalSelectClasses.select}` }}
-            MenuProps={menuProps}
-            IconComponent={iconComponent}
-            value={mode}
-            onChange={handleChange}
-          >
-            <MenuItem value={'confirmed'}>Confirmed</MenuItem>
-            <MenuItem value={'active'}>Active</MenuItem>
-            <MenuItem value={'recovered'}>Recovered</MenuItem>
-            <MenuItem value={'deaths'}>Deaths</MenuItem>
-          </Select>
-        </FormControl>}
+        {!props.onlyTop &&
+          <FormControl className={classes.graphHeaderSelectWrapper}>
+            <Select
+              disableUnderline
+              classes={{ root: `${minimalSelectClasses.select}` }}
+              MenuProps={menuProps}
+              IconComponent={iconComponent}
+              value={mode}
+              onChange={handleChange}
+            >
+              <MenuItem value={'confirmed'}>Confirmed</MenuItem>
+              <MenuItem value={'active'}>Active</MenuItem>
+              <MenuItem value={'recovered'}>Recovered</MenuItem>
+              <MenuItem value={'deaths'}>Deaths</MenuItem>
+            </Select>
+          </FormControl>}
         <Hidden xsDown>
           <div>
             {renderDatePicker()}
           </div>
         </Hidden>
-        {!props.onlyTop && <Hidden mdUp>
-          <IconButton color="inherit" onClick={openFilters}>
-            <TuneIcon />
-          </IconButton>
-        </Hidden>}
+        {!props.onlyTop &&
+          <Hidden mdUp>
+            <IconButton color="inherit" onClick={openFilters}>
+              <TuneIcon />
+            </IconButton>
+          </Hidden>}
       </div>
       <Hidden smUp>
         <div>
