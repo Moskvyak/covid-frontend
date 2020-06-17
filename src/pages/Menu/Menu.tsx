@@ -82,7 +82,7 @@ const Menu: React.FC<Props> = (props: Props) => {
           activeClassName={classes.menuItemSelected}
           exact
         >
-          Chart Race (Beta)
+          Chart Race
         </ListItem>
         <ListItem
           button
