@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { DateRange } from '@material-ui/pickers';
@@ -29,6 +30,13 @@ const useStyles = makeStyles((theme: Theme) =>
         paddingBottom: 0
       }
     },
+    loader: {
+      width: '50%',
+      position: 'absolute',
+      left: '50%',
+      paddingTop: 28,
+      transform: 'translate(-50%,0)'
+    },
     tabs: {
       marginBottom: 8
     },
@@ -41,6 +49,10 @@ const useStyles = makeStyles((theme: Theme) =>
       animationName: '$appear',
       animationDuration: '1s',
       animationTimingFunction: 'linear'
+    },
+    tabPanel: {
+      height: 'calc(100% - 56px)',
+      position: 'relative'
     }
   })
 );
@@ -72,7 +84,12 @@ const SelectedChartRaceBlock: React.FC<SelectedChartProps> = (
   });
   const classes = useStyles();
   if (!getCountriesReportsData || !getCountriesReportsData.Day) {
-    return null;
+    return (
+      <div className={classes.loader}>
+        <p>Loading graph...</p>
+        <LinearProgress />
+      </div>
+    );
   }
   return (
     <div className={classes.fadeIn}>
@@ -105,9 +122,16 @@ const TopChartRaceBlock: React.FC<SelectedChartProps> = (
       endDate: selectedRange[1]
     }
   });
+
   const classes = useStyles();
+ 
   if (!getCountriesReportsData || !getCountriesReportsData.Day) {
-    return null;
+    return (
+      <div className={classes.loader}>
+        <p>Loading graph...</p>
+        <LinearProgress />
+      </div>
+    );
   }
   return (
     <div className={classes.fadeIn}>
@@ -146,20 +170,26 @@ const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
           centered
         >
           <Tab value="top" label="Top 10 chart race" wrapped />
-          <Tab value="selected" label="Selected Chart race" wrapped/>
+          <Tab value="selected" label="Selected Chart race" wrapped />
         </Tabs>
+
         {selectionMode === 'selected' &&
-          <SelectedChartRaceBlock
-            {...props}
-            selectedRange={selectedRange}
-            handleRangeChange={handleRangeChange}
-          />}
+          <div className={classes.tabPanel}>
+            <SelectedChartRaceBlock
+              {...props}
+              selectedRange={selectedRange}
+              handleRangeChange={handleRangeChange}
+            />
+          </div>}
+
         {selectionMode === 'top' &&
-          <TopChartRaceBlock
-            {...props}
-            selectedRange={selectedRange}
-            handleRangeChange={handleRangeChange}
-          />}
+          <div className={classes.tabPanel}>
+            <TopChartRaceBlock
+              {...props}
+              selectedRange={selectedRange}
+              handleRangeChange={handleRangeChange}
+            />
+          </div>}
       </Paper>
     </div>
   );

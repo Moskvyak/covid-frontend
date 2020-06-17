@@ -58,7 +58,10 @@ const useStyles = makeStyles((theme: Theme) =>
     graphsWrapper: {
       flex: 1,
       width: '100%',
-      height: 500
+      height: 500,
+      [theme.breakpoints.down('xs')]: {
+        height: 540
+      }
     },
     padding: {
       padding: 24
