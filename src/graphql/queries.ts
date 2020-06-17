@@ -37,6 +37,8 @@ export const GET_CHART_RACE_TOP_CONFIRMED = gql`
       Reports(order_by: { confirmedTotal: desc }, limit: $limit) {
         id
         confirmedTotal
+        recoveredTotal
+        deathsTotal
         Day {
           date
         }

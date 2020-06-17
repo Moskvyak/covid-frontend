@@ -100,7 +100,7 @@ const TopChartRaceBlock: React.FC<SelectedChartProps> = (
     data: getCountriesReportsData
   } = useQuery(GET_CHART_RACE_TOP_CONFIRMED, {
     variables: {
-      limit: 8,
+      limit: 20,
       startDate: selectedRange[0],
       endDate: selectedRange[1]
     }
@@ -114,6 +114,7 @@ const TopChartRaceBlock: React.FC<SelectedChartProps> = (
       <ChartRaceGraphs
         openFilters={openFilters}
         handleDateChange={handleRangeChange}
+        onlyTop={true}
         selectedRange={selectedRange}
         selectedCountries={selectedCountries}
         countriesData={getCountriesReportsData}
@@ -144,7 +145,7 @@ const ChartRaceReportsBlock: React.FC<Props> = (props: Props) => {
           aria-label="filter tabs"
           centered
         >
-          <Tab value="top" label="Top chart race" wrapped />
+          <Tab value="top" label="Top 10 chart race" wrapped />
           <Tab value="selected" label="Selected Chart race" wrapped/>
         </Tabs>
         {selectionMode === 'selected' &&

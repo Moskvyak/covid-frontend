@@ -88,17 +88,17 @@ export default class ChartRaceManager extends Component<Props, State> {
             data={this.state.currentChart.data}
             width={this.props.chartRaceWidth}
             padding={12}
-            itemHeight={20}
+            itemHeight={16}
             gap={12}
-            numberOfItems={8}
+            numberOfItems={10}
             titleStyle={{
-              font: 'normal 400 13px Arial',
+              font: 'normal 400 10px Arial',
               color: '#222',
               width: 50,
               marginRight: 10
             }}
             valueStyle={{
-              font: 'normal 400 11px Arial',
+              font: 'normal 400 10px Arial',
               color: '#222'
             }}
           />

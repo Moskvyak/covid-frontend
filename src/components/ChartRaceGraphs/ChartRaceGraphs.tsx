@@ -28,6 +28,7 @@ interface Props {
   handleDateChange: (date: DateRange) => void;
   selectedRange: DateRange;
   openFilters(): void;
+  onlyTop?: boolean;
 }
 
 const fontSize = 16;
@@ -175,7 +176,7 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   }
 
   if (xs600) {
-    chartRaceWidth = 600
+    chartRaceWidth = 600;
   }
   const { mode, updateMode } = useContext(GraphModeContext);
   const classes = useStyles();
@@ -229,10 +230,10 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   const recoveredData: any[] = [];
   const deathsData: any[] = [];
   let skipExample = false;
-  const selectedColorsHashMap: {[id: number]: string} = {};
+  const selectedColorsHashMap: { [id: number]: string } = {};
   selectedCountries.forEach((country, index) => {
     selectedColorsHashMap[country.id] = colors[index];
-  })
+  });
   countriesData.Day.forEach((dayItem: any) => {
     const confirmedDataArrayItem: any[] = [];
     const activeDataArrayItem: any[] = [];
@@ -243,7 +244,8 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
       const key = report.Location.name;
       const id = report.Location.id;
       if (!selectedColorsHashMap[id]) {
-        selectedColorsHashMap[id] = colors[Object.keys(selectedColorsHashMap).length]
+        selectedColorsHashMap[id] =
+          colors[Object.keys(selectedColorsHashMap).length];
       }
       const color = selectedColorsHashMap[id];
 
@@ -252,7 +254,6 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
         title: key,
         color
       };
-
       const activeValue =
         report.confirmedTotal - report.recoveredTotal - report.deathsTotal;
       const confirmedItem = {
@@ -281,10 +282,10 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
       skipExample = true;
     }
     const title = moment(dayItem.date).format('MMM DD');
-    confirmedData.push({ title, data: confirmedDataArrayItem});
-    activeData.push({ title, data: activeDataArrayItem});
-    recoveredData.push({ title, data: recoveredDataArrayItem});
-    deathsData.push({ title, data: deathsDataArrayItem});
+    confirmedData.push({ title, data: confirmedDataArrayItem });
+    activeData.push({ title, data: activeDataArrayItem });
+    recoveredData.push({ title, data: recoveredDataArrayItem });
+    deathsData.push({ title, data: deathsDataArrayItem });
   });
 
   const renderDatePicker = () => {
@@ -312,7 +313,7 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   return (
     <div className={classes.root}>
       <div className={classes.graphHeader}>
-        <FormControl className={classes.graphHeaderSelectWrapper}>
+        {!props.onlyTop && <FormControl className={classes.graphHeaderSelectWrapper}>
           <Select
             disableUnderline
             classes={{ root: `${minimalSelectClasses.select}` }}
@@ -326,17 +327,17 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
             <MenuItem value={'recovered'}>Recovered</MenuItem>
             <MenuItem value={'deaths'}>Deaths</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl>}
         <Hidden xsDown>
           <div>
             {renderDatePicker()}
           </div>
         </Hidden>
-        <Hidden mdUp>
+        {!props.onlyTop && <Hidden mdUp>
           <IconButton color="inherit" onClick={openFilters}>
             <TuneIcon />
           </IconButton>
-        </Hidden>
+        </Hidden>}
       </div>
       <Hidden smUp>
         <div>
@@ -344,22 +345,43 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
         </div>
       </Hidden>
       <div className={classes.graphWrapper}>
-        {selectedCountries.length > 0 &&
-          mode === 'confirmed' &&
+        {props.onlyTop &&
           !skipExample &&
-          <ChartRaceManager chartData={confirmedData} chartRaceWidth={chartRaceWidth}/>}
-        {selectedCountries.length > 0 &&
-          mode === 'active' &&
-          !skipExample &&
-          <ChartRaceManager chartData={activeData} chartRaceWidth={chartRaceWidth}/>}
-        {selectedCountries.length > 0 &&
-          mode === 'recovered' &&
-          !skipExample &&
-          <ChartRaceManager chartData={recoveredData} chartRaceWidth={chartRaceWidth}/>}
-        {selectedCountries.length > 0 &&
-          mode === 'deaths' &&
-          !skipExample &&
-          <ChartRaceManager chartData={deathsData} chartRaceWidth={chartRaceWidth}/>}
+          <ChartRaceManager
+            chartData={confirmedData}
+            chartRaceWidth={chartRaceWidth}
+          />}
+        {!props.onlyTop &&
+          <React.Fragment>
+            {selectedCountries.length > 0 &&
+              mode === 'confirmed' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={confirmedData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+            {selectedCountries.length > 0 &&
+              mode === 'active' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={activeData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+            {selectedCountries.length > 0 &&
+              mode === 'recovered' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={recoveredData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+            {selectedCountries.length > 0 &&
+              mode === 'deaths' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={deathsData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+          </React.Fragment>}
       </div>
     </div>
   );

@@ -52,6 +52,7 @@ export default class ChartRace extends Component {
             backgroundColor: item.color,
             borderRadius: 4,
             borderWidth: 1,
+            minWidth: 2,
             width:
               item.value /
               this.state.maxValue *
