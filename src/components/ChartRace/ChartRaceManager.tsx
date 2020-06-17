@@ -83,7 +83,7 @@ export default class ChartRaceManager extends Component<Props, State> {
         <div style={{ width: '100%', textAlign: 'center' }}>
           {this.state.currentChart.title}
         </div>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', background: '#f9f9f9'}}>
           <ChartRace
             data={this.state.currentChart.data}
             width={this.props.chartRaceWidth}
