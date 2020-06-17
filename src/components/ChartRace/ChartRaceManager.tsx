@@ -95,6 +95,7 @@ export default class ChartRaceManager extends Component<Props, State> {
               font: 'normal 400 10px Arial',
               color: '#222',
               width: 50,
+              flex: '0 0 50px',
               marginRight: 10
             }}
             valueStyle={{
