@@ -170,19 +170,17 @@ const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const iw = iOS ? window.screen.width : window.innerWidth;
   const [innerValue, setInnerValue] = useState(iw);
-  const handleResize = () => {
-    const newW = iOS ? window.screen.width : window.innerWidth;
-    setInnerValue(newW);
-  };
-  useEffect(
-    () => {
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
 
+  useEffect(() => {
+    const handleResize = () => {
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const newW = isIOS ? window.screen.width : window.innerWidth;
+      setInnerValue(newW);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const calculateChartRaceWidth = (innerWidth: number) => {
     if (innerWidth < 600) {
