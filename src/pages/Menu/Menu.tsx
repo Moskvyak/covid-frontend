@@ -78,6 +78,17 @@ const Menu: React.FC<Props> = (props: Props) => {
           onClick={onMenuItemClick}
           className={classes.menuItem}
           component={NavLink}
+          to="/chart-race"
+          activeClassName={classes.menuItemSelected}
+          exact
+        >
+          Chart Race
+        </ListItem>
+        <ListItem
+          button
+          onClick={onMenuItemClick}
+          className={classes.menuItem}
+          component={NavLink}
           to="/timeline"
           activeClassName={classes.menuItemSelected}
           exact

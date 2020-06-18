@@ -18,7 +18,33 @@ export const GET_CONTRIES_REPORTS = gql`
         recoveredTotal
         deathsTotal
         Location {
+          id
           name
+        }
+      }
+    }
+  }
+`;
+
+export const GET_CHART_RACE_TOP_CONFIRMED = gql`
+  query MyQuery($startDate: timestamptz, $endDate: timestamptz, $limit: Int!) {
+    Day(
+      where: { date: { _gte: $startDate, _lte: $endDate } }
+      order_by: { date: asc }
+    ) {
+      id
+      date
+      Reports(order_by: { confirmedTotal: desc }, limit: $limit) {
+        id
+        confirmedTotal
+        recoveredTotal
+        deathsTotal
+        Day {
+          date
+        }
+        Location {
+          name
+          id
         }
       }
     }

@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import { SimpleChart } from '../SimpleChart';
+import { colors } from '../../data';
 import Hidden from '@material-ui/core/Hidden';
 
+import ChartRaceManager from '../ChartRace/ChartRaceManager';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -26,6 +27,7 @@ interface Props {
   handleDateChange: (date: DateRange) => void;
   selectedRange: DateRange;
   openFilters(): void;
+  onlyTop?: boolean;
 }
 
 const fontSize = 16;
@@ -157,7 +159,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const CasesGraphs: React.FC<Props> = (props: Props) => {
+const ChartRaceGraphs: React.FC<Props> = (props: Props) => {
   const {
     selectedCountries,
     countriesData,
@@ -165,10 +167,36 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     handleDateChange,
     openFilters
   } = props;
-  const confirmedData: any[] = [];
-  const recoveredData: any[] = [];
-  const deathsData: any[] = [];
-  const activeData: any[] = [];
+  const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const iw = iOS ? window.screen.width : window.innerWidth;
+  const [innerValue, setInnerValue] = useState(iw);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const newW = isIOS ? window.screen.width : window.innerWidth;
+      setInnerValue(newW);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const calculateChartRaceWidth = (innerWidth: number) => {
+    if (innerWidth < 600) {
+      return innerWidth - 48;
+    }
+    if (innerWidth < 960) {
+      return innerWidth - 80;
+    }
+    if (innerWidth < 1280) {
+      return innerWidth - 492;
+    }
+    return innerWidth - 732;
+  };
+
+  const chartRaceWidth = calculateChartRaceWidth(innerValue);
+
   const { mode, updateMode } = useContext(GraphModeContext);
   const classes = useStyles();
   let color: string = CONFIRMED_COLOR;
@@ -177,7 +205,6 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
       color = CONFIRMED_COLOR;
       break;
     }
-
     case 'active': {
       color = ACTIVE_COLOR;
       break;
@@ -217,41 +244,67 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
     },
     getContentAnchorEl: null
   };
+  const confirmedData: any[] = [];
+  const activeData: any[] = [];
+  const recoveredData: any[] = [];
+  const deathsData: any[] = [];
+  let skipExample = false;
+  const selectedColorsHashMap: { [id: number]: string } = {};
+  selectedCountries.forEach((country, index) => {
+    selectedColorsHashMap[country.id] = colors[index];
+  });
   countriesData.Day.forEach((dayItem: any) => {
-    const confirmedReports: any = {};
-    const recoveredReports: any = {};
-    const deathsReports: any = {};
-    const activeReports: any = {};
+    const confirmedDataArrayItem: any[] = [];
+    const activeDataArrayItem: any[] = [];
+    const recoveredDataArrayItem: any[] = [];
+    const deathsDataArrayItem: any[] = [];
 
     dayItem.Reports.forEach((report: any) => {
       const key = report.Location.name;
-      confirmedReports[key] = report.confirmedTotal;
-      recoveredReports[key] = report.recoveredTotal;
-      deathsReports[key] = report.deathsTotal;
-      activeReports[key] =
+      const id = report.Location.id;
+      if (!selectedColorsHashMap[id]) {
+        selectedColorsHashMap[id] =
+          colors[Object.keys(selectedColorsHashMap).length];
+      }
+      const color = selectedColorsHashMap[id];
+
+      const defaultItem = {
+        id,
+        title: key,
+        color
+      };
+      const activeValue =
         report.confirmedTotal - report.recoveredTotal - report.deathsTotal;
+      const confirmedItem = {
+        ...defaultItem,
+        value: report.confirmedTotal
+      };
+      const activeItem = {
+        ...defaultItem,
+        value: activeValue
+      };
+      const recoveredItem = {
+        ...defaultItem,
+        value: report.recoveredTotal
+      };
+      const deathItem = {
+        ...defaultItem,
+        value: report.deathsTotal
+      };
+      recoveredDataArrayItem.push(recoveredItem);
+      deathsDataArrayItem.push(deathItem);
+      activeDataArrayItem.push(activeItem);
+      confirmedDataArrayItem.push(confirmedItem);
     });
-    const id = moment(dayItem.date).format('MMM DD');
-    const newConfirmedItem = {
-      id,
-      ...confirmedReports
-    };
-    const newRecoveredItem = {
-      id,
-      ...recoveredReports
-    };
-    const newDeathsItem = {
-      id,
-      ...deathsReports
-    };
-    const newActiveItem = {
-      id,
-      ...activeReports
-    };
-    confirmedData.push(newConfirmedItem);
-    recoveredData.push(newRecoveredItem);
-    deathsData.push(newDeathsItem);
-    activeData.push(newActiveItem);
+
+    if (!confirmedDataArrayItem.length) {
+      skipExample = true;
+    }
+    const title = moment(dayItem.date).format('MMM DD');
+    confirmedData.push({ title, data: confirmedDataArrayItem });
+    activeData.push({ title, data: activeDataArrayItem });
+    recoveredData.push({ title, data: recoveredDataArrayItem });
+    deathsData.push({ title, data: deathsDataArrayItem });
   });
 
   const renderDatePicker = () => {
@@ -279,31 +332,33 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
   return (
     <div className={classes.root}>
       <div className={classes.graphHeader}>
-        <FormControl className={classes.graphHeaderSelectWrapper}>
-          <Select
-            disableUnderline
-            classes={{ root: `${minimalSelectClasses.select}` }}
-            MenuProps={menuProps}
-            IconComponent={iconComponent}
-            value={mode}
-            onChange={handleChange}
-          >
-            <MenuItem value={'confirmed'}>Confirmed</MenuItem>
-            <MenuItem value={'active'}>Active</MenuItem>
-            <MenuItem value={'recovered'}>Recovered</MenuItem>
-            <MenuItem value={'deaths'}>Deaths</MenuItem>
-          </Select>
-        </FormControl>
+        {!props.onlyTop &&
+          <FormControl className={classes.graphHeaderSelectWrapper}>
+            <Select
+              disableUnderline
+              classes={{ root: `${minimalSelectClasses.select}` }}
+              MenuProps={menuProps}
+              IconComponent={iconComponent}
+              value={mode}
+              onChange={handleChange}
+            >
+              <MenuItem value={'confirmed'}>Confirmed</MenuItem>
+              <MenuItem value={'active'}>Active</MenuItem>
+              <MenuItem value={'recovered'}>Recovered</MenuItem>
+              <MenuItem value={'deaths'}>Deaths</MenuItem>
+            </Select>
+          </FormControl>}
         <Hidden xsDown>
           <div>
             {renderDatePicker()}
           </div>
         </Hidden>
-        <Hidden mdUp>
-          <IconButton color="inherit" onClick={openFilters}>
-            <TuneIcon />
-          </IconButton>
-        </Hidden>
+        {!props.onlyTop &&
+          <Hidden mdUp>
+            <IconButton color="inherit" onClick={openFilters}>
+              <TuneIcon />
+            </IconButton>
+          </Hidden>}
       </div>
       <Hidden smUp>
         <div>
@@ -311,33 +366,46 @@ const CasesGraphs: React.FC<Props> = (props: Props) => {
         </div>
       </Hidden>
       <div className={classes.graphWrapper}>
-        {selectedCountries.length > 0 &&
-          mode === 'confirmed' &&
-          <SimpleChart
-            data={confirmedData}
-            selectedCountries={selectedCountries}
+        {props.onlyTop &&
+          !skipExample &&
+          <ChartRaceManager
+            chartData={confirmedData}
+            chartRaceWidth={chartRaceWidth}
           />}
-        {selectedCountries.length > 0 &&
-          mode === 'active' &&
-          <SimpleChart
-            data={activeData}
-            selectedCountries={selectedCountries}
-          />}
-        {selectedCountries.length > 0 &&
-          mode === 'recovered' &&
-          <SimpleChart
-            data={recoveredData}
-            selectedCountries={selectedCountries}
-          />}
-        {selectedCountries.length > 0 &&
-          mode === 'deaths' &&
-          <SimpleChart
-            data={deathsData}
-            selectedCountries={selectedCountries}
-          />}
+        {!props.onlyTop &&
+          <React.Fragment>
+            {selectedCountries.length > 0 &&
+              mode === 'confirmed' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={confirmedData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+            {selectedCountries.length > 0 &&
+              mode === 'active' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={activeData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+            {selectedCountries.length > 0 &&
+              mode === 'recovered' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={recoveredData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+            {selectedCountries.length > 0 &&
+              mode === 'deaths' &&
+              !skipExample &&
+              <ChartRaceManager
+                chartData={deathsData}
+                chartRaceWidth={chartRaceWidth}
+              />}
+          </React.Fragment>}
       </div>
     </div>
   );
 };
 
-export { CasesGraphs };
+export { ChartRaceGraphs };

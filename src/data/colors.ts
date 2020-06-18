@@ -32,7 +32,23 @@ export const colors: any[] = [
   blueGrey[700],
   lime[700],
   purple[700],
-  amber[700]
+  amber[700],
+  blue[200],
+  red[200],
+  deepPurple[200],
+  teal[200],
+  yellow[200],
+  orange[200],
+  brown[200],
+  grey[200],
+  pink[200],
+  indigo[200],
+  green[200],
+  deepOrange[200],
+  blueGrey[200],
+  lime[200],
+  purple[200],
+  amber[200]
 ];
 
 export const CONFIRMED_COLOR = blueGrey[500];

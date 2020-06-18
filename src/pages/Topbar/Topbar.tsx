@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const routes: any = {
   '/trends': 'Trends',
+  '/chart-race': 'Chart race',
   '/timeline': 'Timeline',
   '/about': 'About'
 }
